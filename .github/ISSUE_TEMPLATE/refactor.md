@@ -1,6 +1,6 @@
 ---
 name: Refactor
-about: **Need some improvement** ♻️
+about: "Need some improvement ♻️"
 title: ''
 labels: refactor
 assignees: ''

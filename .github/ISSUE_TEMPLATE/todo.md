@@ -1,6 +1,6 @@
 ---
 name: Refactor
-about: "**Do you have anything to do?** \U0001F64B‍️"
+about: "Do you have anything to do? \U0001F64B‍️"
 title: ''
 labels: refactor
 assignees: ''
