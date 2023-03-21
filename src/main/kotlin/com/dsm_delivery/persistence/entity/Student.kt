@@ -1,5 +1,6 @@
 package com.dsm_delivery.persistence.entity
 
+import com.dsm_delivery.plugins.DataBaseFactory.dbQuery
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -25,9 +26,17 @@ enum class Sex {
 }
 
 class Student(id: EntityID<UUID>) : UUIDEntity(id) {
-    companion object : UUIDEntityClass<Student>(StudentTable)
-
     var name: String by StudentTable.name
     var number: Int by StudentTable.number
     val sex: Sex by StudentTable.sex
+
+    companion object : StudentEntity()
+}
+
+abstract class StudentEntity : UUIDEntityClass<Student>(StudentTable) {
+
+    suspend fun findByNumber(number: Int) : Student? = dbQuery {
+        find { StudentTable.number eq number }
+            .firstOrNull()
+    }
 }
