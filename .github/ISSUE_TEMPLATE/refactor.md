@@ -8,9 +8,9 @@ assignees: ''
 ---
 
 ## AS-IS
-- <!-- 개선 내용 작성 -->
-- <!-- 개선 내용 작성 -->
+- <!-- improvement part -->
+- <!-- improvement part -->
 
 ## TO-BE
-- <!-- 개선 방안 작성 -->
-- <!-- 개선 방안 작성 -->
+- <!-- Solution -->
+- <!-- Solution -->
