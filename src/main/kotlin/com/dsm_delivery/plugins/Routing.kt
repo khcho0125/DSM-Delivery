@@ -1,6 +1,6 @@
 package com.dsm_delivery.plugins
 
-import com.dsm_delivery.domain.Api
+import com.dsm_delivery.api.Api
 import io.ktor.server.application.*
 import org.koin.java.KoinJavaComponent.getKoin
 

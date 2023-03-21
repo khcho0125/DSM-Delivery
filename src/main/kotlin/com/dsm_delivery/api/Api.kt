@@ -1,4 +1,4 @@
-package com.dsm_delivery.domain
+package com.dsm_delivery.api
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*

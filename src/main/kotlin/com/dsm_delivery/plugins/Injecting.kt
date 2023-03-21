@@ -1,19 +1,17 @@
 package com.dsm_delivery.plugins
 
-import com.dsm_delivery.domain.Api
-import com.dsm_delivery.domain.auth.AuthApi
+import com.dsm_delivery.api.Api
+import com.dsm_delivery.api.SecurityApi
 import com.dsm_delivery.domain.auth.usecase.StudentLogin
 import com.dsm_delivery.domain.auth.token.JwtGenerator
 import com.dsm_delivery.domain.auth.token.TokenProvider
 import io.ktor.server.application.*
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import org.koin.logger.slf4jLogger
 
 /**
  *
@@ -25,7 +23,7 @@ import org.koin.logger.slf4jLogger
 private val auth: Array<Module> = arrayOf(
     module {
         singleOf(::StudentLogin)
-        singleOf(::AuthApi) bind Api::class
+        singleOf(::SecurityApi) bind Api::class
     },
     module {
         singleOf(::JwtGenerator) bind TokenProvider::class
