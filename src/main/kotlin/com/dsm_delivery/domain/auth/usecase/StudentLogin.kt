@@ -1,6 +1,8 @@
 package com.dsm_delivery.domain.auth.usecase
 
+import com.dsm_delivery.domain.auth.token.TokenCarton
 import com.dsm_delivery.domain.auth.token.TokenProvider
+import com.dsm_delivery.persistence.entity.Student
 
 /**
  *
@@ -12,7 +14,15 @@ import com.dsm_delivery.domain.auth.token.TokenProvider
 class StudentLogin(
     private val tokenProvider: TokenProvider
 ) {
-    operator fun invoke() {
+    suspend operator fun invoke(request: Request) : TokenCarton {
+        val student: Student = Student.findByNumber(request.number)
+            ?: TODO()
 
+        return tokenProvider.generateToken(student.id.value)
     }
+
+    data class Request(
+        val number: Int,
+        val password: String
+    )
 }
