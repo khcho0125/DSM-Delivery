@@ -8,5 +8,5 @@ assignees: ''
 ---
 
 ## Describe
-- <!-- 작업 내용 작성 -->
-- <!-- 작업 내용 작성 -->
+- <!-- to do work -->
+- <!-- to do work -->
