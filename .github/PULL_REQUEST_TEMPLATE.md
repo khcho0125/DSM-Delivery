@@ -1,10 +1,10 @@
-## 내용 설명
-- <!-- 작업 내용 작성 -->
-- <!-- 작업 내용 작성 -->
+## Task Description
+- <!-- task description -->
+- <!-- task description -->
 
-## 체크리스트
-- [ ] 어플리케이션 구동(혹은 테스트)시 오류는 없나요?
-- [ ] 생성된 코드에 Javadoc 주석을 추가 하였나요?
+## Check List
+- [ ] The application doesn't have any errors during start-up or testing?
+- [ ] Did you add Javadoc comment?
 
-## 관련 이슈
-- resolved # <!-- 이슈번호 -->
+## Relation Issue
+- resolved # <!-- Issue Number -->

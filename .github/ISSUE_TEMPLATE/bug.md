@@ -8,5 +8,5 @@ assignees: ''
 ---
 
 ## Description
-- <!-- 상황 설명 작성 -->
-- <!-- 상황 설명 작성 -->
+- <!-- explanation -->
+- <!-- explanation -->
