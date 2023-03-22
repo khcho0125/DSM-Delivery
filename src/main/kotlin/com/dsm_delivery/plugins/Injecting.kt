@@ -2,9 +2,11 @@ package com.dsm_delivery.plugins
 
 import com.dsm_delivery.api.Api
 import com.dsm_delivery.api.StudentApi
-import com.dsm_delivery.domain.auth.usecase.StudentLogin
 import com.dsm_delivery.domain.auth.token.JwtGenerator
 import com.dsm_delivery.domain.auth.token.TokenProvider
+import com.dsm_delivery.domain.auth.usecase.StudentLogin
+import com.dsm_delivery.persistence.factory.StudentQueryFactory
+import com.dsm_delivery.persistence.repository.StudentRepository
 import io.ktor.server.application.*
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -30,7 +32,13 @@ private val auth: Array<Module> = arrayOf(
     }
 )
 
-private val domain: Array<Module> = auth
+private val factory: Array<Module> = arrayOf(
+    module {
+        singleOf(::StudentQueryFactory) bind StudentRepository::class
+    }
+)
+
+private val domain: Array<Module> = auth + factory
 
 fun Application.injectModule() {
     val properties: Array<Module> = arrayOf(module {
