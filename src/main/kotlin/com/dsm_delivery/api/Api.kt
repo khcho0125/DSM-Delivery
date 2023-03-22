@@ -11,5 +11,5 @@ import io.ktor.server.routing.*
  * @date 2023/03/22
  **/
 abstract class Api(private val route: Routing.() -> Unit) {
-    operator fun invoke(app: Application) = app.routing(route)
+    operator fun invoke(app: Application): Routing = app.routing(route)
 }

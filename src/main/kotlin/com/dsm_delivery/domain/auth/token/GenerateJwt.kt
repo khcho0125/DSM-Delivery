@@ -25,7 +25,7 @@ class JwtGenerator(
     private val securityProperties: SecurityProperties
 ) : TokenProvider {
 
-    private fun generateRefreshToken() : String {
+    private fun generateRefreshToken(): String {
         return JWT.create()
             .withSubject(JWT_SUBJECT)
             .withKeyId(JWT_REFRESH)
@@ -36,7 +36,7 @@ class JwtGenerator(
 
     }
 
-    private fun generateAccessToken(studentId: UUID) : String {
+    private fun generateAccessToken(studentId: UUID): String {
         return JWT.create()
             .withSubject(JWT_SUBJECT)
             .withKeyId(JWT_ACCESS)
@@ -47,7 +47,7 @@ class JwtGenerator(
             .sign(Algorithm.HMAC256(securityProperties.secret))
     }
 
-    override suspend fun generateToken(studentId: UUID) : TokenCarton {
+    override suspend fun generateToken(studentId: UUID): TokenCarton {
         return TokenCarton(
             accessToken = generateAccessToken(studentId),
             refreshToken = generateRefreshToken(),
@@ -55,7 +55,7 @@ class JwtGenerator(
         )
     }
 
-    private companion object {
+    companion object {
         const val JWT_SUBJECT = "Authentication"
         const val JWT_REFRESH = "Refresh"
         const val JWT_ACCESS = "Access"
