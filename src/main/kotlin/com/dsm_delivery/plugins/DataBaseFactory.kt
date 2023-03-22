@@ -23,10 +23,11 @@ import org.jetbrains.exposed.sql.transactions.transaction
  **/
 object DataBaseFactory {
 
-    private const val DB_URL = "database.url"
-    private const val DB_DRIVER = "database.driver"
-    private const val DB_USER = "database.user"
-    private const val DB_PASSWD = "database.password"
+    private const val DB_PREFIX = "database"
+    private const val DB_URL = "$DB_PREFIX.url"
+    private const val DB_DRIVER = "$DB_PREFIX.driver"
+    private const val DB_USER = "$DB_PREFIX.user"
+    private const val DB_PASSWD = "$DB_PREFIX.password"
 
     operator fun invoke(config: ApplicationConfig) {
         val database = Database.connect(
