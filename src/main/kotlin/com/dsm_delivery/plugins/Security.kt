@@ -2,13 +2,16 @@ package com.dsm_delivery.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.dsm_delivery.domain.auth.token.JwtGenerator
+import com.dsm_delivery.persistence.repository.StudentRepository
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.config.*
 import io.ktor.server.response.*
-import org.koin.java.KoinJavaComponent.get
+import org.koin.ktor.ext.getKoin
+import java.util.UUID
 
 /**
  *
@@ -39,7 +42,8 @@ class SecurityProperties(config: ApplicationConfig) {
 
 fun Application.configureSecurity() {
 
-    val securityProperties: SecurityProperties = get(SecurityProperties::class.java)
+    val securityProperties: SecurityProperties = getKoin().get()
+    val studentRepository: StudentRepository = getKoin().get()
 
     authentication {
         jwt {
@@ -50,11 +54,18 @@ fun Application.configureSecurity() {
                     .require(Algorithm.HMAC256(securityProperties.secret))
                     .withAudience(securityProperties.audience)
                     .withIssuer(securityProperties.issuer)
+                    .withJWTId(JwtGenerator.JWT_ACCESS)
+                    .withSubject(JwtGenerator.JWT_SUBJECT)
                     .build()
             )
 
-            validate { credential ->
-                if (credential.payload.getClaim("id").asString() != null) JWTPrincipal(credential.payload) else null
+            validate valid@{ credential ->
+                val id: UUID = credential.payload.getClaim(JwtGenerator.JWT_STUDENT_ID).asString()
+                    ?.let(UUID::fromString) ?: return@valid null
+
+                if (!studentRepository.existsById(id)) return@valid null
+
+                JWTPrincipal(credential.payload)
             }
 
             challenge { _, _ ->
