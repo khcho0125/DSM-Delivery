@@ -1,7 +1,7 @@
 package com.dsm_delivery.plugins
 
 import com.dsm_delivery.api.Api
-import com.dsm_delivery.api.SecurityApi
+import com.dsm_delivery.api.StudentApi
 import com.dsm_delivery.domain.auth.usecase.StudentLogin
 import com.dsm_delivery.domain.auth.token.JwtGenerator
 import com.dsm_delivery.domain.auth.token.TokenProvider
@@ -23,7 +23,7 @@ import org.koin.dsl.module
 private val auth: Array<Module> = arrayOf(
     module {
         singleOf(::StudentLogin)
-        singleOf(::SecurityApi) bind Api::class
+        singleOf(::StudentApi) bind Api::class
     },
     module {
         singleOf(::JwtGenerator) bind TokenProvider::class

@@ -7,7 +7,14 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-class SecurityApi(
+/**
+ *
+ * 학생의 API를 관리하는 StudentApi
+ *
+ * @author Chokyunghyeon
+ * @date 2023/03/22
+ **/
+class StudentApi(
     studentLogin: StudentLogin
 ) : Api({
     route("/student") {
@@ -18,5 +25,7 @@ class SecurityApi(
                 message = studentLogin(request)
             )
         }
+
+
     }
 })
