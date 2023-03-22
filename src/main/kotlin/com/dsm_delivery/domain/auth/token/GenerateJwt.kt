@@ -3,7 +3,6 @@ package com.dsm_delivery.domain.auth.token
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.dsm_delivery.plugins.SecurityProperties
-import io.ktor.server.application.*
 import java.time.LocalDateTime
 import java.util.Date
 import java.util.UUID

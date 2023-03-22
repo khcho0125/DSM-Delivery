@@ -1,12 +1,7 @@
 package com.dsm_delivery.persistence.entity
 
-import com.dsm_delivery.plugins.DataBaseFactory.dbQuery
-import org.jetbrains.exposed.dao.UUIDEntity
-import org.jetbrains.exposed.dao.UUIDEntityClass
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.insert
 import java.util.UUID
 
 /**

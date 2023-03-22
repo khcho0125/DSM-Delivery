@@ -3,11 +3,9 @@ package com.dsm_delivery.persistence.factory
 import com.dsm_delivery.persistence.entity.Student
 import com.dsm_delivery.persistence.entity.StudentTable
 import com.dsm_delivery.persistence.repository.StudentRepository
-import com.dsm_delivery.plugins.DataBaseFactory
 import com.dsm_delivery.plugins.DataBaseFactory.dbQuery
 import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.select
 import java.util.UUID
 
