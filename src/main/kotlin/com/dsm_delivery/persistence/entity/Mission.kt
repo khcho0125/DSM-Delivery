@@ -28,12 +28,11 @@ enum class DeliveryState {
     POSTING, DELIVERING, COMPLETED, MISSED
 }
 
-class Mission(id: EntityID<UUID>) : UUIDEntity(id) {
-    companion object : UUIDEntityClass<Mission>(MissionTable)
-
-    val student: Student by Student referencedOn MissionTable.student
-    var state: DeliveryState by MissionTable.state
-    var stuff: String by MissionTable.stuff
-    var deadline: LocalDateTime by MissionTable.deadline
-    var deliveryState: Student? by Student optionalReferencedOn MissionTable.deliveryman
-}
+data class Mission(
+    val id: UUID,
+    val studentId: UUID,
+    val deliverymanId: UUID,
+    val stuff: String,
+    val deadline: LocalDateTime,
+    val state: DeliveryState
+)

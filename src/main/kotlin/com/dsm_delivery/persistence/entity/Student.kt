@@ -6,6 +6,7 @@ import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.insert
 import java.util.UUID
 
 /**
@@ -19,24 +20,17 @@ object StudentTable : UUIDTable("tbl_student") {
     val name: Column<String> = varchar("name", 20)
     val number: Column<Int> = integer("school_number")
     val sex: Column<Sex> = enumerationByName("sex", 6, Sex::class)
+    val password: Column<String> = char("password", 60)
 }
 
 enum class Sex {
     FEMALE, MALE
 }
 
-class Student(id: EntityID<UUID>) : UUIDEntity(id) {
-    var name: String by StudentTable.name
-    var number: Int by StudentTable.number
-    val sex: Sex by StudentTable.sex
-
-    companion object : StudentEntity()
-}
-
-abstract class StudentEntity : UUIDEntityClass<Student>(StudentTable) {
-
-    suspend fun findByNumber(number: Int) : Student? = dbQuery {
-        find { StudentTable.number eq number }
-            .firstOrNull()
-    }
-}
+data class Student(
+    val id: UUID,
+    val name: String,
+    val number: Int,
+    val sex: Sex,
+    val password: String
+)
