@@ -21,4 +21,6 @@ interface StudentRepository {
     suspend fun findBy(where: () -> Op<Boolean>): Student?
 
     suspend fun existsById(id: UUID): Boolean
+
+    suspend fun existsBy(where: () -> Op<Boolean>): Boolean
 }

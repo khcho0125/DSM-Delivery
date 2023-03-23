@@ -59,4 +59,10 @@ class StudentQueryFactory : StudentRepository {
             .select { StudentTable.id eq id }
             .empty()
     }
+
+    override suspend fun existsBy(where: () -> Op<Boolean>): Boolean = dbQuery {
+        StudentTable
+            .select(where())
+            .empty()
+    }
 }
