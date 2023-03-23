@@ -1,8 +1,8 @@
-package com.dsm_delivery.domain.auth.token
+package com.dsm.domain.auth.token
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.dsm_delivery.plugins.SecurityProperties
+import com.dsm.plugins.SecurityProperties
 import java.time.LocalDateTime
 import java.util.Date
 import java.util.UUID
@@ -32,7 +32,6 @@ class JwtGenerator(
             .withIssuer(securityProperties.issuer)
             .withExpiresAt(Date(System.currentTimeMillis() + securityProperties.refreshExpired))
             .sign(Algorithm.HMAC256(securityProperties.secret))
-
     }
 
     private fun generateAccessToken(studentId: UUID): String {
@@ -60,5 +59,4 @@ class JwtGenerator(
         const val JWT_ACCESS = "Access"
         const val JWT_STUDENT_ID = "student-id"
     }
-
 }

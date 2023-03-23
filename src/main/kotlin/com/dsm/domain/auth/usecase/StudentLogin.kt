@@ -1,9 +1,9 @@
-package com.dsm_delivery.domain.auth.usecase
+package com.dsm.domain.auth.usecase
 
-import com.dsm_delivery.domain.auth.token.TokenCarton
-import com.dsm_delivery.domain.auth.token.TokenProvider
-import com.dsm_delivery.persistence.entity.Student
-import com.dsm_delivery.persistence.repository.StudentRepository
+import com.dsm.domain.auth.token.TokenCarton
+import com.dsm.domain.auth.token.TokenProvider
+import com.dsm.persistence.entity.Student
+import com.dsm.persistence.repository.StudentRepository
 import kotlinx.serialization.Serializable
 
 /**

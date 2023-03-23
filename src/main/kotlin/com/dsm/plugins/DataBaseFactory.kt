@@ -1,10 +1,10 @@
-package com.dsm_delivery.plugins
+package com.dsm.plugins
 
-import com.dsm_delivery.persistence.entity.MissionTable
-import com.dsm_delivery.persistence.entity.StudentTable
+import com.dsm.persistence.entity.MissionTable
+import com.dsm.persistence.entity.StudentTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.server.config.*
+import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -31,12 +31,14 @@ object DataBaseFactory {
 
     operator fun invoke(config: ApplicationConfig) {
         val database = Database.connect(
-            HikariDataSource(HikariConfig().apply {
-                driverClassName = config.property(DB_DRIVER).getString()
-                jdbcUrl = config.property(DB_URL).getString()
-                username = config.property(DB_USER).getString()
-                password = config.property(DB_PASSWD).getString()
-            })
+            HikariDataSource(
+                HikariConfig().apply {
+                    driverClassName = config.property(DB_DRIVER).getString()
+                    jdbcUrl = config.property(DB_URL).getString()
+                    username = config.property(DB_USER).getString()
+                    password = config.property(DB_PASSWD).getString()
+                }
+            )
         )
 
         val tables: Array<Table> = arrayOf(
@@ -50,11 +52,11 @@ object DataBaseFactory {
         }
     }
 
-    suspend fun <T> dbQuery(database: Database? = null, block: () -> T) : T = newSuspendedTransaction(
-        db = database, context = Dispatchers.IO
+    suspend fun <T> dbQuery(database: Database? = null, block: () -> T): T = newSuspendedTransaction(
+        db = database,
+        context = Dispatchers.IO
     ) {
         addLogger(StdOutSqlLogger)
         block()
     }
-
 }

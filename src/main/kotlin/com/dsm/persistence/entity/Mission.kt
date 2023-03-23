@@ -1,4 +1,4 @@
-package com.dsm_delivery.persistence.entity
+package com.dsm.persistence.entity
 
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
@@ -17,13 +17,17 @@ import java.util.UUID
 object MissionTable : UUIDTable("tbl_mission") {
     val student: Column<EntityID<UUID>> = reference("student_id", StudentTable).uniqueIndex()
     val deliveryman: Column<EntityID<UUID>?> = reference("delivery_man_id", StudentTable).nullable()
-    val stuff: Column<String> = varchar("stuff", 50)
+    val stuff: Column<String> = varchar("stuff", Mission.STUFF_MAX_LENGTH)
     val deadline: Column<LocalDateTime> = datetime("deadline")
-    val state: Column<DeliveryState> = enumerationByName("state", 10, DeliveryState::class)
+    val state: Column<DeliveryState> = enumerationByName("state", DeliveryState.STATE_MAX_LENGTH, DeliveryState::class)
 }
 
 enum class DeliveryState {
-    POSTING, DELIVERING, COMPLETED, MISSED
+    POSTING, DELIVERING, COMPLETED, MISSED;
+
+    internal companion object {
+        const val STATE_MAX_LENGTH: Int = 10
+    }
 }
 
 data class Mission(
@@ -33,4 +37,9 @@ data class Mission(
     val stuff: String,
     val deadline: LocalDateTime,
     val state: DeliveryState
-)
+) {
+
+    internal companion object {
+        const val STUFF_MAX_LENGTH: Int = 50
+    }
+}

@@ -1,9 +1,9 @@
-package com.dsm_delivery.persistence.factory
+package com.dsm.persistence.factory
 
-import com.dsm_delivery.persistence.entity.Student
-import com.dsm_delivery.persistence.entity.StudentTable
-import com.dsm_delivery.persistence.repository.StudentRepository
-import com.dsm_delivery.plugins.DataBaseFactory.dbQuery
+import com.dsm.persistence.entity.Student
+import com.dsm.persistence.entity.StudentTable
+import com.dsm.persistence.repository.StudentRepository
+import com.dsm.plugins.DataBaseFactory.dbQuery
 import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.select

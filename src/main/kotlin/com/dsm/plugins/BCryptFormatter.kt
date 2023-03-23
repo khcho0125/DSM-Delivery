@@ -1,4 +1,4 @@
-package com.dsm_delivery.plugins
+package com.dsm.plugins
 
 import org.mindrot.jbcrypt.BCrypt
 

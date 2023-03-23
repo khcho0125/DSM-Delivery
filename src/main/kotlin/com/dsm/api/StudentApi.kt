@@ -1,10 +1,11 @@
-package com.dsm_delivery.api
+package com.dsm.api
 
-import com.dsm_delivery.domain.auth.usecase.StudentLogin
-import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import com.dsm.domain.auth.usecase.StudentLogin
+import io.ktor.server.application.call
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
 
 /**
  *

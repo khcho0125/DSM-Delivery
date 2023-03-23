@@ -1,6 +1,6 @@
-package com.dsm_delivery.persistence.repository
+package com.dsm.persistence.repository
 
-import com.dsm_delivery.persistence.entity.Student
+import com.dsm.persistence.entity.Student
 import org.jetbrains.exposed.sql.Op
 import java.util.UUID
 
