@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version Version.KOTLIN
+    kotlin("plugin.serialization") version Version.KOTLIN
     id("io.ktor.plugin") version Version.KTOR
 }
 
@@ -21,6 +22,7 @@ dependencies {
     implementation(Dependency.MYSQL)
     implementation(Dependency.HIKARI)
 
+    implementation(Dependency.KTOR_NEGOTIATION)
     implementation(Dependency.KTOR_SERIALIZATION)
 
     implementation(Dependency.KOIN)
@@ -29,6 +31,7 @@ dependencies {
     implementation(Dependency.KTOR_AUTH)
     implementation(Dependency.KTOR_AUTH_JWT)
     implementation(Dependency.KTOR_CORS)
+    implementation(Dependency.BCRYPT)
 
     implementation(Dependency.KTOR_LOGGING)
     implementation(Dependency.LOGBACK)

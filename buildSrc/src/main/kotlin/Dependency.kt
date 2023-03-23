@@ -4,13 +4,15 @@ object Dependency {
     const val KTOR_CORE: String = "io.ktor:ktor-server-core-jvm:${Version.KTOR}"
     const val KTOR_NETTY: String = "io.ktor:ktor-server-netty-jvm:${Version.KTOR}"
 
-    // serialization
-    const val KTOR_SERIALIZATION: String = "io.ktor:ktor-serialization:${Version.KTOR}"
+    // negotiation
+    const val KTOR_NEGOTIATION: String = "io.ktor:ktor-server-content-negotiation:${Version.KTOR}"
+    const val KTOR_SERIALIZATION: String = "io.ktor:ktor-serialization-kotlinx-json:${Version.KTOR}"
 
     // auth
     const val KTOR_AUTH: String = "io.ktor:ktor-server-auth-jvm:${Version.KTOR}"
     const val KTOR_AUTH_JWT: String = "io.ktor:ktor-server-auth-jwt-jvm:${Version.KTOR}"
     const val KTOR_CORS: String = "io.ktor:ktor-server-cors-jvm:${Version.KTOR}"
+    const val BCRYPT: String = "org.mindrot:jbcrypt:${Version.BCRYPT}"
 
     // logging
     const val KTOR_LOGGING: String ="io.ktor:ktor-server-call-logging-jvm:${Version.KTOR}"
