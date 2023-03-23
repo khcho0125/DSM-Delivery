@@ -2,9 +2,11 @@ plugins {
     kotlin("jvm") version Version.KOTLIN
     kotlin("plugin.serialization") version Version.KOTLIN
     id("io.ktor.plugin") version Version.KTOR
+    id("io.gitlab.arturbosch.detekt") version Version.DETEKT
 }
 
 group = "com.dsm_delivery"
+
 version = "0.0.1"
 
 repositories {
@@ -38,4 +40,13 @@ dependencies {
 
     implementation(Dependency.KTOR_TEST)
     implementation(Dependency.KOTLIN_TEST)
+
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.22.0")
+}
+
+detekt {
+    toolVersion = Version.DETEKT
+    buildUponDefaultConfig = true
+    autoCorrect = true
+    config.setFrom(files("$rootDir/detekt-config.yml"))
 }

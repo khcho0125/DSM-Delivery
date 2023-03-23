@@ -7,4 +7,5 @@ object Version {
     const val KOIN: String = "3.3.1"
     const val HIKARI: String = "5.0.1"
     const val BCRYPT: String = "0.4"
+    const val DETEKT: String = "1.22.0"
 }
