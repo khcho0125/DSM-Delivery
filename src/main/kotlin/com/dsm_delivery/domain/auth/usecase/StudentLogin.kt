@@ -4,6 +4,7 @@ import com.dsm_delivery.domain.auth.token.TokenCarton
 import com.dsm_delivery.domain.auth.token.TokenProvider
 import com.dsm_delivery.persistence.entity.Student
 import com.dsm_delivery.persistence.repository.StudentRepository
+import kotlinx.serialization.Serializable
 
 /**
  *
@@ -18,13 +19,14 @@ class StudentLogin(
 ) {
     suspend operator fun invoke(request: Request): TokenCarton {
         val student: Student = studentRepository.findByNumber(request.number)
-            ?: TODO()
+            ?: TODO("throw Not Found Exception")
 
-        // TODO: Password Authentication
+        student.verify(request.password)
 
         return tokenProvider.generateToken(student.id)
     }
 
+    @Serializable
     data class Request(
         val number: Int,
         val password: String
