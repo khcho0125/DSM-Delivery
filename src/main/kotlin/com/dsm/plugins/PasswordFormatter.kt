@@ -4,12 +4,12 @@ import org.mindrot.jbcrypt.BCrypt
 
 /**
  *
- * Bcrypt 암호를 담당하는 BCryptFormatter
+ * 암호화를 담당하는 PasswordFormatter
  *
  * @author Chokyunghyeon
  * @date 2023/03/23
  **/
-object BCryptFormatter {
+object PasswordFormatter {
 
     fun checkPassword(attempt: String, password: String): Boolean = BCrypt.checkpw(attempt, password)
 

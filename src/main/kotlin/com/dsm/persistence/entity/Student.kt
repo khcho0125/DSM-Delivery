@@ -1,6 +1,6 @@
 package com.dsm.persistence.entity
 
-import com.dsm.plugins.BCryptFormatter
+import com.dsm.plugins.PasswordFormatter
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.Column
 import java.util.UUID
@@ -35,8 +35,8 @@ data class Student(
     val password: String
 ) {
 
-    fun verify(password: String): Unit =
-        if (BCryptFormatter.checkPassword(password, this.password)) {
+    fun verifyPassword(password: String): Unit =
+        if (PasswordFormatter.checkPassword(password, this.password)) {
             Unit
         } else {
             TODO("throw Different Password Exception")

@@ -1,6 +1,6 @@
 package com.dsm.domain.auth.usecase
 
-import com.dsm.domain.auth.token.TokenCarton
+import com.dsm.domain.auth.token.TokenContainer
 import com.dsm.domain.auth.token.TokenProvider
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.StudentRepository
@@ -17,11 +17,11 @@ class StudentLogin(
     private val tokenProvider: TokenProvider,
     private val studentRepository: StudentRepository
 ) {
-    suspend operator fun invoke(request: Request): TokenCarton {
+    suspend operator fun invoke(request: Request): TokenContainer {
         val student: Student = studentRepository.findByNumber(request.number)
             ?: TODO("throw Not Found Exception")
 
-        student.verify(request.password)
+        student.verifyPassword(request.password)
 
         return tokenProvider.generateToken(student.id)
     }
