@@ -10,5 +10,5 @@ import java.util.UUID
  * @date 2023/03/20
  **/
 interface TokenProvider {
-    suspend fun generateToken(studentId: UUID): TokenCarton
+    suspend fun generateToken(studentId: UUID): TokenContainer
 }

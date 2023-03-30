@@ -14,7 +14,7 @@ import java.util.UUID
  * @author Chokyunghyeon
  * @date 2023/03/20
  **/
-data class TokenCarton(
+data class TokenContainer(
     val accessToken: String,
     val refreshToken: String,
     val accessTokenExpired: LocalDateTime
@@ -45,8 +45,8 @@ class JwtGenerator(
             .sign(Algorithm.HMAC256(securityProperties.secret))
     }
 
-    override suspend fun generateToken(studentId: UUID): TokenCarton {
-        return TokenCarton(
+    override suspend fun generateToken(studentId: UUID): TokenContainer {
+        return TokenContainer(
             accessToken = generateAccessToken(studentId),
             refreshToken = generateRefreshToken(),
             accessTokenExpired = LocalDateTime.now().plusSeconds(securityProperties.accessExpired)
