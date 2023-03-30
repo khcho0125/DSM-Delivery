@@ -1,4 +1,4 @@
-package com.dsm_delivery.domain.auth.token
+package com.dsm.domain.auth.token
 
 import java.util.UUID
 
@@ -10,5 +10,5 @@ import java.util.UUID
  * @date 2023/03/20
  **/
 interface TokenProvider {
-    suspend fun generateToken(studentId: UUID) : TokenCarton
+    suspend fun generateToken(studentId: UUID): TokenContainer
 }
