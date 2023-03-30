@@ -39,13 +39,11 @@ fun Application.configureSecurity() {
                     .build()
             )
 
-            validate valid@{ credential ->
-                val id: UUID = credential.payload.getClaim(JwtGenerator.JWT_STUDENT_ID).asString()
-                    ?.let(UUID::fromString) ?: return@valid null
-
-                if (!studentRepository.existsById(id)) return@valid null
-
-                JWTPrincipal(credential.payload)
+            validate { credential ->
+                credential.payload.getClaim(JwtGenerator.JWT_STUDENT_ID).asString()?.let {
+                    if (studentRepository.existsById(it.let(UUID::fromString))) null
+                    else JWTPrincipal(credential.payload)
+                }
             }
 
             challenge { _, _ ->
