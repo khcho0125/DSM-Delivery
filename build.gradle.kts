@@ -38,15 +38,17 @@ dependencies {
     implementation(Dependency.KTOR_LOGGING)
     implementation(Dependency.LOGBACK)
 
+    implementation(Dependency.STATUS_PAGES)
+
     implementation(Dependency.KTOR_TEST)
     implementation(Dependency.KOTLIN_TEST)
 
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.22.0")
+    detektPlugins(Dependency.DETEKT)
 }
 
 detekt {
     toolVersion = Version.DETEKT
     buildUponDefaultConfig = true
     autoCorrect = true
-    config.setFrom(files("$rootDir/detekt-config.yml"))
+    config.setFrom(files("$rootDir/src/main/resources/detekt-config.yml"))
 }
