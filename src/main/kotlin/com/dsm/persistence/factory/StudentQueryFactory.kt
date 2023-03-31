@@ -6,6 +6,7 @@ import com.dsm.persistence.repository.StudentRepository
 import com.dsm.plugins.DataBaseFactory.dbQuery
 import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import java.util.UUID
 
@@ -64,5 +65,14 @@ class StudentQueryFactory : StudentRepository {
         StudentTable
             .select(where())
             .empty()
+    }
+
+    override suspend fun insert(student: Student): Student = dbQuery {
+        StudentTable.insert {
+            it[name] = student.name
+            it[number] = student.number
+            it[password] = student.password
+            it[sex] = student.sex
+        }.resultedValues!!.single().let(::toEntity)
     }
 }
