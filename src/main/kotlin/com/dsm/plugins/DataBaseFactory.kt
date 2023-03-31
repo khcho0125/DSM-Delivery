@@ -1,5 +1,6 @@
 package com.dsm.plugins
 
+import com.dsm.persistence.entity.AuthenticateStudentTable
 import com.dsm.persistence.entity.MissionTable
 import com.dsm.persistence.entity.StudentTable
 import com.zaxxer.hikari.HikariConfig
@@ -43,7 +44,8 @@ object DataBaseFactory {
 
         val tables: Array<Table> = arrayOf(
             MissionTable,
-            StudentTable
+            StudentTable,
+            AuthenticateStudentTable
         )
 
         transaction(database) {
