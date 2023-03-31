@@ -3,6 +3,7 @@ package com.dsm.plugins
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.dsm.domain.auth.token.JwtGenerator
+import com.dsm.exception.ExceptionContainer
 import com.dsm.persistence.repository.StudentRepository
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -41,13 +42,22 @@ fun Application.configureSecurity() {
 
             validate { credential ->
                 credential.payload.getClaim(JwtGenerator.JWT_STUDENT_ID).asString()?.let {
-                    if (studentRepository.existsById(it.let(UUID::fromString))) null
-                    else JWTPrincipal(credential.payload)
+                    if (studentRepository.existsById(it.let(UUID::fromString))) {
+                        null
+                    } else {
+                        JWTPrincipal(credential.payload)
+                    }
                 }
             }
 
             challenge { _, _ ->
-                call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
+                call.respond(
+                    message = ExceptionContainer(
+                        message = "Token is not valid or has expired",
+                        status = HttpStatusCode.Unauthorized.value
+                    ),
+                    status = HttpStatusCode.Unauthorized
+                )
             }
         }
     }
