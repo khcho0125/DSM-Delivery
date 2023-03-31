@@ -2,8 +2,10 @@ package com.dsm.domain.auth.usecase
 
 import com.dsm.domain.auth.token.TokenContainer
 import com.dsm.domain.auth.token.TokenProvider
+import com.dsm.exception.StudentExceptions
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.StudentRepository
+import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.Serializable
 
 /**
@@ -17,9 +19,10 @@ class StudentLogin(
     private val tokenProvider: TokenProvider,
     private val studentRepository: StudentRepository
 ) {
+
     suspend operator fun invoke(request: Request): TokenContainer {
         val student: Student = studentRepository.findByNumber(request.number)
-            ?: TODO("throw Not Found Exception")
+            ?: throw StudentExceptions.NotFound()
 
         student.verifyPassword(request.password)
 
@@ -31,4 +34,8 @@ class StudentLogin(
         val number: Int,
         val password: String
     )
+
+    companion object {
+        val SUCCESS_STATUS: HttpStatusCode = HttpStatusCode.OK
+    }
 }
