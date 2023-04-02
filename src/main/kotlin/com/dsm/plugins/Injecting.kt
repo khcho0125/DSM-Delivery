@@ -4,8 +4,11 @@ import com.dsm.api.Api
 import com.dsm.api.StudentApi
 import com.dsm.domain.auth.token.JwtGenerator
 import com.dsm.domain.auth.token.TokenProvider
+import com.dsm.domain.auth.usecase.RegisterStudent
 import com.dsm.domain.auth.usecase.StudentLogin
+import com.dsm.persistence.factory.AuthenticateStudentQueryFactory
 import com.dsm.persistence.factory.StudentQueryFactory
+import com.dsm.persistence.repository.AuthenticateStudentRepository
 import com.dsm.persistence.repository.StudentRepository
 import io.ktor.server.application.Application
 import org.koin.core.context.startKoin
@@ -25,6 +28,7 @@ import org.koin.dsl.module
 private val auth: List<Module> = listOf(
     module {
         singleOf(::StudentLogin)
+        singleOf(::RegisterStudent)
         singleOf(::StudentApi) bind Api::class
     },
     module {
@@ -35,6 +39,7 @@ private val auth: List<Module> = listOf(
 private val factory: List<Module> = listOf(
     module {
         singleOf(::StudentQueryFactory) bind StudentRepository::class
+        singleOf(::AuthenticateStudentQueryFactory) bind AuthenticateStudentRepository::class
     }
 )
 
