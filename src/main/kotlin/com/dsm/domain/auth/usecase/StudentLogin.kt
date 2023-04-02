@@ -1,10 +1,11 @@
 package com.dsm.domain.auth.usecase
 
-import com.dsm.domain.auth.token.TokenContainer
 import com.dsm.domain.auth.token.TokenProvider
+import com.dsm.domain.auth.token.TokenResult
 import com.dsm.exception.StudentExceptions
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.StudentRepository
+import com.dsm.plugins.DataBaseFactory.dbQuery
 import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.Serializable
 
@@ -20,13 +21,13 @@ class StudentLogin(
     private val studentRepository: StudentRepository
 ) {
 
-    suspend operator fun invoke(request: Request): TokenContainer {
+    suspend operator fun invoke(request: Request): TokenResult = dbQuery {
         val student: Student = studentRepository.findByNumber(request.number)
             ?: throw StudentExceptions.NotFound()
 
         student.verifyPassword(request.password)
 
-        return tokenProvider.generateToken(student.id)
+        tokenProvider.generateToken(student.id)
     }
 
     @Serializable
