@@ -1,13 +1,15 @@
 package com.dsm.domain.auth.usecase
 
-import com.dsm.domain.auth.token.TokenContainer
 import com.dsm.domain.auth.token.TokenProvider
+import com.dsm.domain.auth.token.TokenResult
 import com.dsm.exception.StudentExceptions
 import com.dsm.persistence.entity.AuthenticateStudent
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.AuthenticateStudentRepository
 import com.dsm.persistence.repository.StudentRepository
+import com.dsm.plugins.DataBaseFactory.dbQuery
 import io.ktor.http.HttpStatusCode
+import kotlinx.serialization.Serializable
 
 /**
  *
@@ -21,23 +23,29 @@ class RegisterStudent(
     private val studentRepository: StudentRepository,
     private val tokenProvider: TokenProvider
 ) {
-    suspend operator fun invoke(request: Request): TokenContainer {
+    suspend operator fun invoke(request: Request): TokenResult = dbQuery {
+        val student: Student = registerStudentAccount(request)
+        tokenProvider.generateToken(student.id)
+    }
+
+    private suspend fun registerStudentAccount(request: Request): Student {
         val authenticate: AuthenticateStudent = authenticateStudentRepository.findByNumber(request.number)
             ?: throw StudentExceptions.Unauthorized("Not Allowed Student Number")
 
-        authenticate.check(request.name)
+        authenticate(request.name)
 
         val student: Student = studentRepository.insert(Student.register(
-            name = authenticate.name,
+            name = request.name,
             number = authenticate.number,
             sex = authenticate.sex,
             password = request.password
         ))
-        authenticateStudentRepository.updateIsUsed(authenticate.used())
+        authenticateStudentRepository.update(authenticate.used())
 
-        return tokenProvider.generateToken(student.id)
+        return student
     }
 
+    @Serializable
     data class Request(
         val number: Int,
         val name: String,

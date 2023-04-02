@@ -13,5 +13,5 @@ interface AuthenticateStudentRepository {
 
     suspend fun findByNumber(number: Int): AuthenticateStudent?
 
-    suspend fun updateIsUsed(authenticateStudent: AuthenticateStudent): Boolean
+    suspend fun update(authenticateStudent: AuthenticateStudent): Boolean
 }
