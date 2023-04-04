@@ -1,6 +1,6 @@
 package com.dsm.persistence.entity
 
-import com.dsm.exception.StudentExceptions
+import com.dsm.exception.AuthenticateStudentException
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
@@ -31,13 +31,8 @@ data class AuthenticateStudent(
 
     operator fun invoke(name: String) {
         when {
-            isUsed -> throw StudentExceptions.Conflict(ALREADY_USED)
-            this.name != name -> throw StudentExceptions.Unauthorized(DIFFERENT_NAME)
+            isUsed -> throw AuthenticateStudentException.AlreadyUsed()
+            this.name != name -> throw AuthenticateStudentException.UnknownName()
         }
-    }
-
-    internal companion object {
-        const val ALREADY_USED: String = "Already Registered Student"
-        const val DIFFERENT_NAME: String = "Not Matched Student Name"
     }
 }
