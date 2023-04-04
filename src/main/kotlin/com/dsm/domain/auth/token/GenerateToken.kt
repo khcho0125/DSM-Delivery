@@ -34,7 +34,7 @@ class JwtGenerator(
             .withJWTId(JWT_REFRESH)
             .withAudience(securityProperties.audience)
             .withIssuer(securityProperties.issuer)
-            .withExpiresAt(Date(System.currentTimeMillis() + securityProperties.refreshExpired.toMills()))
+            .withExpiresAt(Date(System.currentTimeMillis() + securityProperties.refreshExpiredMillis))
             .sign(Algorithm.HMAC256(securityProperties.secret))
     }
 
@@ -45,7 +45,7 @@ class JwtGenerator(
             .withAudience(securityProperties.audience)
             .withIssuer(securityProperties.issuer)
             .withClaim(JWT_STUDENT_ID, studentId.toString())
-            .withExpiresAt(Date(System.currentTimeMillis() + securityProperties.accessExpired.toMills()))
+            .withExpiresAt(Date(System.currentTimeMillis() + securityProperties.accessExpiredMillis))
             .sign(Algorithm.HMAC256(securityProperties.secret))
     }
 
@@ -53,18 +53,14 @@ class JwtGenerator(
         return TokenResult(
             accessToken = generateAccessToken(studentId),
             refreshToken = generateRefreshToken(),
-            accessTokenExpired = LocalDateTime.now().plusSeconds(securityProperties.accessExpired).withNano(0)
+            accessTokenExpired = LocalDateTime.now().plusNanos(securityProperties.accessExpiredMillis).withNano(0)
         )
     }
-
-    private fun Long.toMills(): Long = this * millisecondPerSecond
 
     companion object {
         const val JWT_SUBJECT: String = "Authentication"
         const val JWT_REFRESH: String = "Refresh"
         const val JWT_ACCESS: String = "Access"
         const val JWT_STUDENT_ID: String = "student-id"
-
-        private const val millisecondPerSecond: Long = 1000
     }
 }

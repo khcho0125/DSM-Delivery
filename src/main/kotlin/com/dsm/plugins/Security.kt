@@ -73,15 +73,19 @@ class SecurityProperties(config: ApplicationConfig) {
     val audience: String = config.property(JWT_AUDIENCE).getString()
     val issuer: String = config.property(JWT_ISSUER).getString()
 
-    val refreshExpired: Long = config.property(REFRESH_TOKEN_EXPIRED_TIME).getString().toLong()
-    val accessExpired: Long = config.property(ACCESS_TOKEN_EXPIRED_TIME).getString().toLong()
+    val refreshExpiredMillis: Long = config.property(REFRESH_TOKEN_EXPIRED_TIME)
+        .getString().toLong() * millisecondPerSecond
+    val accessExpiredMillis: Long = config.property(ACCESS_TOKEN_EXPIRED_TIME)
+        .getString().toLong() * millisecondPerSecond
 
     private companion object {
         const val JWT_AUDIENCE: String = "jwt.audience"
         const val JWT_SECRET: String = "jwt.secret"
         const val JWT_REALM: String = "jwt.realm"
         const val JWT_ISSUER: String = "jwt.issuer"
-        const val REFRESH_TOKEN_EXPIRED_TIME = "jwt.token.refresh-expired"
-        const val ACCESS_TOKEN_EXPIRED_TIME = "jwt.token.access-expired"
+        const val REFRESH_TOKEN_EXPIRED_TIME: String = "jwt.token.refresh-expired"
+        const val ACCESS_TOKEN_EXPIRED_TIME: String = "jwt.token.access-expired"
+
+        const val millisecondPerSecond: Long = 1000
     }
 }
