@@ -2,6 +2,7 @@ package com.dsm.api
 
 import com.dsm.domain.auth.usecase.RegisterStudent
 import com.dsm.domain.auth.usecase.StudentLogin
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -24,14 +25,14 @@ class StudentApi(
             val request: StudentLogin.Request = call.receive()
             call.respond(
                 message = studentLogin(request),
-                status = StudentLogin.SUCCESS_STATUS
+                status = HttpStatusCode.OK
             )
         }
         post("/signup") {
             val request: RegisterStudent.Request = call.receive()
             call.respond(
                 message = registerStudent(request),
-                status = RegisterStudent.SUCCESS_STATUS
+                status = HttpStatusCode.Created
             )
         }
     }

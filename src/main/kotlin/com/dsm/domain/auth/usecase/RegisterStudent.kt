@@ -8,7 +8,6 @@ import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.AuthenticateStudentRepository
 import com.dsm.persistence.repository.StudentRepository
 import com.dsm.plugins.DataBaseFactory.dbQuery
-import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.Serializable
 
 /**
@@ -52,8 +51,4 @@ class RegisterStudent(
         val password: String,
         val room: Int
     )
-
-    companion object {
-        val SUCCESS_STATUS: HttpStatusCode = HttpStatusCode.Created
-    }
 }

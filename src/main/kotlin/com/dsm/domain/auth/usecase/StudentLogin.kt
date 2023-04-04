@@ -6,7 +6,6 @@ import com.dsm.exception.StudentException
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.StudentRepository
 import com.dsm.plugins.DataBaseFactory.dbQuery
-import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.Serializable
 
 /**
@@ -35,8 +34,4 @@ class StudentLogin(
         val number: Int,
         val password: String
     )
-
-    companion object {
-        val SUCCESS_STATUS: HttpStatusCode = HttpStatusCode.OK
-    }
 }
