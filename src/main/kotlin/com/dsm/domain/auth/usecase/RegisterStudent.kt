@@ -2,7 +2,7 @@ package com.dsm.domain.auth.usecase
 
 import com.dsm.domain.auth.token.TokenProvider
 import com.dsm.domain.auth.token.TokenResult
-import com.dsm.exception.StudentExceptions
+import com.dsm.exception.AuthenticateStudentException
 import com.dsm.persistence.entity.AuthenticateStudent
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.AuthenticateStudentRepository
@@ -30,7 +30,7 @@ class RegisterStudent(
 
     private suspend fun registerStudentAccount(request: Request): Student {
         val authenticate: AuthenticateStudent = authenticateStudentRepository.findByNumber(request.number)
-            ?: throw StudentExceptions.Unauthorized("Not Allowed Student Number")
+            ?: throw AuthenticateStudentException.UnknownNumber()
 
         authenticate(request.name)
 

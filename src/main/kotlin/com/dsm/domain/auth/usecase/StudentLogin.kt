@@ -2,7 +2,7 @@ package com.dsm.domain.auth.usecase
 
 import com.dsm.domain.auth.token.TokenProvider
 import com.dsm.domain.auth.token.TokenResult
-import com.dsm.exception.StudentExceptions
+import com.dsm.exception.StudentException
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.StudentRepository
 import com.dsm.plugins.DataBaseFactory.dbQuery
@@ -23,7 +23,7 @@ class StudentLogin(
 
     suspend operator fun invoke(request: Request): TokenResult = dbQuery {
         val student: Student = studentRepository.findByNumber(request.number)
-            ?: throw StudentExceptions.NotFound()
+            ?: throw StudentException.NotFound()
 
         student.verifyPassword(request.password)
 

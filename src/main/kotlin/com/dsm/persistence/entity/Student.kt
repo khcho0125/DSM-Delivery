@@ -1,6 +1,6 @@
 package com.dsm.persistence.entity
 
-import com.dsm.exception.StudentExceptions
+import com.dsm.exception.StudentException
 import com.dsm.plugins.PasswordFormatter
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.Column
@@ -40,7 +40,7 @@ data class Student(
         if (PasswordFormatter.checkPassword(password, this.password)) {
             Unit
         } else {
-            throw StudentExceptions.Unauthorized(DIFFERENT_PASSWORD_MESSAGE)
+            throw StudentException.IncorrectPassword()
         }
 
     companion object {
@@ -53,7 +53,5 @@ data class Student(
 
         internal const val NAME_MAX_LENGTH: Int = 20
         internal const val HASHED_PASSWORD_LENGTH: Int = 60
-
-        private const val DIFFERENT_PASSWORD_MESSAGE: String = "Not Matched Student Password"
     }
 }
