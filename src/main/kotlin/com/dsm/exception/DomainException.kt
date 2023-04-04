@@ -10,19 +10,31 @@ import kotlinx.serialization.Serializable
  * @author Chokyunghyeon
  * @date 2023/03/30
  **/
-abstract class DomainException(
+sealed class DomainException(
     override val message: String?,
     val status: HttpStatusCode
 ) : Throwable(message) {
 
-    fun toResponse(): ExceptionContainer = ExceptionContainer(
+    fun toResponse(): ExceptionResponse = ExceptionResponse(
         message = message ?: status.description,
         status = status.value
     )
+
+    open class NotFound(override val message: String? = null)
+        : DomainException(message, HttpStatusCode.NotFound)
+
+    open class Unauthorized(override val message: String? = null)
+        : DomainException(message, HttpStatusCode.Unauthorized)
+
+    open class BadRequest(override val message: String? = null)
+        : DomainException(message, HttpStatusCode.BadRequest)
+
+    open class Conflict(override val message: String? = null)
+        : DomainException(message, HttpStatusCode.Conflict)
 }
 
 @Serializable
-data class ExceptionContainer(
+data class ExceptionResponse(
     val message: String,
     val status: Int
 )

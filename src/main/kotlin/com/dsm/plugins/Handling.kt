@@ -1,7 +1,7 @@
 package com.dsm.plugins
 
 import com.dsm.exception.DomainException
-import com.dsm.exception.ExceptionContainer
+import com.dsm.exception.ExceptionResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -28,7 +28,7 @@ fun Application.configureHandling() {
                 else -> {
                     call.respond(
                         message = HttpStatusCode.InternalServerError.run {
-                            ExceptionContainer(
+                            ExceptionResponse(
                                 message = description,
                                 status = value
                             )
