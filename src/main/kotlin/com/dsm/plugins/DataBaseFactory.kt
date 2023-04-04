@@ -1,5 +1,6 @@
 package com.dsm.plugins
 
+import com.dsm.persistence.entity.AuthenticateStudentTable
 import com.dsm.persistence.entity.MissionTable
 import com.dsm.persistence.entity.StudentTable
 import com.zaxxer.hikari.HikariConfig
@@ -10,6 +11,7 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -43,7 +45,8 @@ object DataBaseFactory {
 
         val tables: Array<Table> = arrayOf(
             MissionTable,
-            StudentTable
+            StudentTable,
+            AuthenticateStudentTable
         )
 
         transaction(database) {
@@ -52,11 +55,11 @@ object DataBaseFactory {
         }
     }
 
-    suspend fun <T> dbQuery(database: Database? = null, block: () -> T): T = newSuspendedTransaction(
+    suspend fun <T> dbQuery(database: Database? = null, block: suspend (Transaction) -> T): T = newSuspendedTransaction(
         db = database,
         context = Dispatchers.IO
     ) {
         addLogger(StdOutSqlLogger)
-        block()
+        block(this)
     }
 }

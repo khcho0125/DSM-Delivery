@@ -3,9 +3,9 @@ package com.dsm.persistence.factory
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.entity.StudentTable
 import com.dsm.persistence.repository.StudentRepository
-import com.dsm.plugins.DataBaseFactory.dbQuery
 import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import java.util.UUID
 
@@ -26,43 +26,38 @@ class StudentQueryFactory : StudentRepository {
         sex = row[StudentTable.sex]
     )
 
-    override suspend fun findById(id: UUID): Student? = dbQuery {
-        StudentTable
-            .select { StudentTable.id eq id }
-            .singleOrNull()
-            ?.let(::toEntity)
-    }
+    override suspend fun findById(id: UUID): Student? = StudentTable
+        .select { StudentTable.id eq id }
+        .singleOrNull()
+        ?.let(::toEntity)
 
-    override suspend fun findByNumber(number: Int): Student? = dbQuery {
-        StudentTable
-            .select { StudentTable.number eq number }
-            .singleOrNull()
-            ?.let(::toEntity)
-    }
+    override suspend fun findByNumber(number: Int): Student? = StudentTable
+        .select { StudentTable.number eq number }
+        .singleOrNull()
+        ?.let(::toEntity)
 
-    override suspend fun findByName(name: String): Student? = dbQuery {
-        StudentTable
-            .select { StudentTable.name eq name }
-            .singleOrNull()
-            ?.let(::toEntity)
-    }
+    override suspend fun findByName(name: String): Student? = StudentTable
+        .select { StudentTable.name eq name }
+        .singleOrNull()
+        ?.let(::toEntity)
 
-    override suspend fun findBy(where: () -> Op<Boolean>): Student? = dbQuery {
-        StudentTable
-            .select(where())
-            .singleOrNull()
-            ?.let(::toEntity)
-    }
+    override suspend fun findBy(where: () -> Op<Boolean>): Student? = StudentTable
+        .select(where())
+        .singleOrNull()
+        ?.let(::toEntity)
 
-    override suspend fun existsById(id: UUID): Boolean = dbQuery {
-        StudentTable
-            .select { StudentTable.id eq id }
-            .empty()
-    }
+    override suspend fun existsById(id: UUID): Boolean = StudentTable
+        .select { StudentTable.id eq id }
+        .empty()
 
-    override suspend fun existsBy(where: () -> Op<Boolean>): Boolean = dbQuery {
-        StudentTable
-            .select(where())
-            .empty()
-    }
+    override suspend fun existsBy(where: () -> Op<Boolean>): Boolean = StudentTable
+        .select(where())
+        .empty()
+
+    override suspend fun insert(student: Student): Student = StudentTable.insert {
+        it[name] = student.name
+        it[number] = student.number
+        it[password] = student.password
+        it[sex] = student.sex
+    }.resultedValues!!.single().let(::toEntity)
 }

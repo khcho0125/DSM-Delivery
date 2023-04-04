@@ -34,4 +34,9 @@ object Dependency {
     const val KOIN_LOGGER: String = "io.insert-koin:koin-logger-slf4j:${Version.KOIN}"
     const val KOIN: String = "io.insert-koin:koin-ktor:${Version.KOIN}"
 
+    // exception handling
+    const val STATUS_PAGES: String = "io.ktor:ktor-server-status-pages:${Version.KTOR}"
+
+    // ci
+    const val DETEKT: String = "io.gitlab.arturbosch.detekt:detekt-formatting:${Version.DETEKT}"
 }

@@ -2,6 +2,7 @@ package com.dsm
 
 import com.dsm.plugins.DataBaseFactory
 import com.dsm.plugins.configureHTTP
+import com.dsm.plugins.configureHandling
 import com.dsm.plugins.configureMonitoring
 import com.dsm.plugins.configureNegotiating
 import com.dsm.plugins.configureRouting
@@ -13,6 +14,7 @@ import io.ktor.server.netty.EngineMain
 fun main(args: Array<String>): Unit = EngineMain.main(args)
 
 fun Application.module() {
+    configureHandling()
     DataBaseFactory(environment.config)
     injectModule()
     configureNegotiating()
