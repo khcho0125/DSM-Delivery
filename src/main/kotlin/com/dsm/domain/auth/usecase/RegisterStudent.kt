@@ -7,7 +7,7 @@ import com.dsm.persistence.entity.AuthenticateStudent
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.AuthenticateStudentRepository
 import com.dsm.persistence.repository.StudentRepository
-import com.dsm.plugins.DataBaseFactory.dbQuery
+import com.dsm.plugins.database.dbQuery
 import kotlinx.serialization.Serializable
 
 /**
@@ -24,7 +24,7 @@ class RegisterStudent(
 ) {
     suspend operator fun invoke(request: Request): TokenResult = dbQuery {
         val student: Student = registerStudentAccount(request)
-        tokenProvider.generateToken(student.id)
+        return@dbQuery tokenProvider.generateToken(student.id)
     }
 
     private suspend fun registerStudentAccount(request: Request): Student {
