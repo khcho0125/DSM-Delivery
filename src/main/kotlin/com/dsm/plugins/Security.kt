@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.dsm.domain.auth.token.JwtGenerator
 import com.dsm.exception.ExceptionResponse
 import com.dsm.persistence.repository.StudentRepository
-import com.dsm.plugins.DataBaseFactory.dbQuery
+import com.dsm.plugins.database.dbQuery
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.auth.authentication
@@ -43,12 +43,13 @@ fun Application.configureSecurity() {
 
             validate { credential ->
                 dbQuery {
-                    credential.payload.getClaim(JwtGenerator.JWT_STUDENT_ID).asString()?.let {
-                        if (studentRepository.existsById(it.let(UUID::fromString))) {
-                            null
-                        } else {
-                            JWTPrincipal(credential.payload)
-                        }
+                    val studentId: String = credential.payload.getClaim(JwtGenerator.JWT_STUDENT_ID).asString()
+                        ?: return@dbQuery null
+
+                    return@dbQuery if (studentRepository.existsById(studentId.let(UUID::fromString))) {
+                        null
+                    } else {
+                        JWTPrincipal(credential.payload)
                     }
                 }
             }
@@ -78,7 +79,7 @@ class SecurityProperties(config: ApplicationConfig) {
     val accessExpiredMillis: Long = config.property(ACCESS_TOKEN_EXPIRED_TIME)
         .getString().toLong() * millisecondPerSecond
 
-    private companion object {
+    companion object {
         const val JWT_AUDIENCE: String = "jwt.audience"
         const val JWT_SECRET: String = "jwt.secret"
         const val JWT_REALM: String = "jwt.realm"
