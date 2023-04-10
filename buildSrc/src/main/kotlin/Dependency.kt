@@ -30,6 +30,8 @@ object Dependency {
     const val MYSQL: String = "com.mysql:mysql-connector-j:${Version.MYSQL}"
     const val HIKARI: String = "com.zaxxer:HikariCP:${Version.HIKARI}"
 
+    const val LETTUCE: String = "io.lettuce:lettuce-core:${Version.LETTUCE}"
+
     // koin
     const val KOIN_LOGGER: String = "io.insert-koin:koin-logger-slf4j:${Version.KOIN}"
     const val KOIN: String = "io.insert-koin:koin-ktor:${Version.KOIN}"

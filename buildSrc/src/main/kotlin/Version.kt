@@ -8,4 +8,5 @@ object Version {
     const val HIKARI: String = "5.0.1"
     const val BCRYPT: String = "0.4"
     const val DETEKT: String = "1.22.0"
+    const val LETTUCE: String = "6.2.3.RELEASE"
 }

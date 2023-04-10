@@ -23,6 +23,7 @@ dependencies {
     implementation(Dependency.EXPOSED_TIME)
     implementation(Dependency.MYSQL)
     implementation(Dependency.HIKARI)
+    implementation(Dependency.LETTUCE)
 
     implementation(Dependency.KTOR_NEGOTIATION)
     implementation(Dependency.KTOR_SERIALIZATION)
