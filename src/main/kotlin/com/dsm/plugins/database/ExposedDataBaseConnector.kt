@@ -5,7 +5,9 @@ import com.dsm.persistence.entity.MissionTable
 import com.dsm.persistence.entity.StudentTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.server.config.ApplicationConfig
+import io.ktor.events.Events
+import io.ktor.server.application.ApplicationStarted
+import kotlinx.coroutines.DisposableHandle
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
@@ -15,27 +17,29 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
  *
- * Mysql의 동작을 담당하는 MysqlDataBaseFactory
+ * Exposed 데이터베이스 연결을 담당하는 MysqlDataBaseConnector
  *
  * @author Chokyunghyeon
  * @date 2023/03/16
  **/
-object MysqlDataBaseFactory {
+object ExposedDataBaseConnector {
 
-    private const val MYSQL_PREFIX = "mysql"
-    private const val MYSQL_URL = "$MYSQL_PREFIX.url"
-    private const val MYSQL_DRIVER = "$MYSQL_PREFIX.driver"
-    private const val MYSQL_USER = "$MYSQL_PREFIX.user"
-    private const val MYSQL_PASSWD = "$MYSQL_PREFIX.password"
+    private const val EXPOSED_PREFIX = "exposed"
+    private const val EXPOSED_URL = "$EXPOSED_PREFIX.url"
+    private const val EXPOSED_DRIVER = "$EXPOSED_PREFIX.driver"
+    private const val EXPOSED_USER = "$EXPOSED_PREFIX.user"
+    private const val EXPOSED_PASSWD = "$EXPOSED_PREFIX.password"
 
-    operator fun invoke(config: ApplicationConfig) {
+    fun Events.connectExposed() : DisposableHandle = subscribe(ApplicationStarted) {
+        val config = it.environment.config
+
         val database = Database.connect(
             HikariDataSource(
                 HikariConfig().apply {
-                    driverClassName = config.property(MYSQL_DRIVER).getString()
-                    jdbcUrl = config.property(MYSQL_URL).getString()
-                    username = config.property(MYSQL_USER).getString()
-                    password = config.property(MYSQL_PASSWD).getString()
+                    driverClassName = config.property(EXPOSED_DRIVER).getString()
+                    jdbcUrl = config.property(EXPOSED_URL).getString()
+                    username = config.property(EXPOSED_USER).getString()
+                    password = config.property(EXPOSED_PASSWD).getString()
                 }
             )
         )
