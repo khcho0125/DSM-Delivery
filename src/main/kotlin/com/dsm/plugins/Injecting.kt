@@ -7,8 +7,10 @@ import com.dsm.domain.auth.token.TokenProvider
 import com.dsm.domain.auth.usecase.RegisterStudent
 import com.dsm.domain.auth.usecase.StudentLogin
 import com.dsm.persistence.factory.AuthenticateStudentQueryFactory
+import com.dsm.persistence.factory.RefreshTokenQueryFactory
 import com.dsm.persistence.factory.StudentQueryFactory
 import com.dsm.persistence.repository.AuthenticateStudentRepository
+import com.dsm.persistence.repository.RefreshTokenRepository
 import com.dsm.persistence.repository.StudentRepository
 import io.ktor.server.application.Application
 import org.koin.core.context.startKoin
@@ -25,25 +27,24 @@ import org.koin.dsl.module
  * @author Chokyunghyeon
  * @date 2023/03/20
  **/
-private val auth: List<Module> = listOf(
-    module {
-        singleOf(::StudentLogin)
-        singleOf(::RegisterStudent)
-        singleOf(::StudentApi) bind Api::class
-    },
-    module {
-        singleOf(::JwtGenerator) bind TokenProvider::class
-    }
-)
+fun Application.injectModule() {
+    val auth: List<Module> = listOf(
+        module {
+            singleOf(::StudentLogin)
+            singleOf(::RegisterStudent)
+            singleOf(::StudentApi) bind Api::class
+        },
+        module {
+            singleOf(::JwtGenerator) bind TokenProvider::class
+        }
+    )
 
-private val factory: List<Module> = listOf(
-    module {
+    val factory: List<Module> = listOf(module {
         singleOf(::StudentQueryFactory) bind StudentRepository::class
         singleOf(::AuthenticateStudentQueryFactory) bind AuthenticateStudentRepository::class
-    }
-)
+        singleOf(::RefreshTokenQueryFactory) bind RefreshTokenRepository::class
+    })
 
-fun Application.injectModule() {
     val properties: List<Module> = listOf(
         module {
             single { SecurityProperties(environment.config) }
