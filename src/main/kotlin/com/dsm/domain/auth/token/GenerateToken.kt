@@ -2,6 +2,8 @@ package com.dsm.domain.auth.token
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.dsm.persistence.entity.RefreshToken
+import com.dsm.persistence.repository.RefreshTokenRepository
 import com.dsm.plugins.SecurityProperties
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -25,17 +27,26 @@ data class TokenResult(
 )
 
 class JwtGenerator(
-    private val securityProperties: SecurityProperties
+    private val securityProperties: SecurityProperties,
+    private val refreshTokenRepository: RefreshTokenRepository
 ) : TokenProvider {
 
-    private fun generateRefreshToken(): String {
-        return JWT.create()
+    private suspend fun generateRefreshToken(studentId: UUID): String {
+        val token: String = JWT.create()
             .withSubject(JWT_SUBJECT)
             .withJWTId(JWT_REFRESH)
             .withAudience(securityProperties.audience)
             .withIssuer(securityProperties.issuer)
             .withExpiresAt(Date(System.currentTimeMillis() + securityProperties.refreshExpiredMillis))
             .sign(Algorithm.HMAC256(securityProperties.secret))
+
+        refreshTokenRepository.insert(RefreshToken(
+            token = token,
+            studentId = studentId,
+            expired = securityProperties.refreshExpiredMillis
+        ))
+
+        return token
     }
 
     private fun generateAccessToken(studentId: UUID): String {
@@ -50,10 +61,14 @@ class JwtGenerator(
     }
 
     override suspend fun generateToken(studentId: UUID): TokenResult {
+        val accessToken: String = generateAccessToken(studentId)
+        val refreshToken: String = generateRefreshToken(studentId)
+
         return TokenResult(
-            accessToken = generateAccessToken(studentId),
-            refreshToken = generateRefreshToken(),
-            accessTokenExpired = LocalDateTime.now().plusNanos(securityProperties.accessExpiredMillis).withNano(0)
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            accessTokenExpired = LocalDateTime.now()
+                .plusNanos(securityProperties.accessExpiredMillis).withNano(0)
         )
     }
 
