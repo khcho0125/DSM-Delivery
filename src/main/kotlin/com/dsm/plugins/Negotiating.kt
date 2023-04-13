@@ -22,12 +22,10 @@ fun Application.configureNegotiating() {
     }
 
     install(ContentNegotiation) {
-        json(
-            Json {
-                serializersModule = serializers
-                prettyPrint = true
-                isLenient = true
-            }
-        )
+        json(Json {
+            serializersModule = serializers
+            prettyPrint = true
+            isLenient = true
+        })
     }
 }

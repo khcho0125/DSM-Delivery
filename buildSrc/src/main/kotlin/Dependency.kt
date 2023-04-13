@@ -6,7 +6,7 @@ object Dependency {
 
     // negotiation
     const val KTOR_NEGOTIATION: String = "io.ktor:ktor-server-content-negotiation:${Version.KTOR}"
-    const val KTOR_SERIALIZATION: String = "io.ktor:ktor-serialization-kotlinx-json:${Version.KTOR}"
+    const val KTOR_SERIALIZATION: String = "io.ktor:ktor-serialization-kotlinx-json-jvm:${Version.KTOR}"
 
     // auth
     const val KTOR_AUTH: String = "io.ktor:ktor-server-auth-jvm:${Version.KTOR}"

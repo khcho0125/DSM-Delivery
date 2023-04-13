@@ -9,7 +9,6 @@ import io.lettuce.core.RedisURI
 import io.lettuce.core.api.StatefulRedisConnection
 import io.lettuce.core.api.async.RedisAsyncCommands
 import kotlinx.coroutines.DisposableHandle
-import kotlinx.serialization.json.Json
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -34,9 +33,7 @@ object RedisDatabaseConnector {
     private lateinit var redisClient: RedisClient
     lateinit var redisCommands: RedisAsyncCommands<String, String>
 
-    val json: Json = Json { encodeDefaults = true }
-
-    val logger: Logger = LoggerFactory.getLogger(RedisDatabaseConnector::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(RedisDatabaseConnector::class.java)
 
     fun Events.connectRedis() : DisposableHandle = subscribe(ApplicationStarted) {
         val config: ApplicationConfig = it.environment.config
