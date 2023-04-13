@@ -17,18 +17,18 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
  *
- * Exposed 데이터베이스 연결을 담당하는 MysqlDataBaseConnector
+ * Exposed 데이터베이스 연결을 담당하는 ExposedDataBaseConnector
  *
  * @author Chokyunghyeon
  * @date 2023/03/16
  **/
 object ExposedDataBaseConnector {
 
-    private const val EXPOSED_PREFIX = "exposed"
-    private const val EXPOSED_URL = "$EXPOSED_PREFIX.url"
-    private const val EXPOSED_DRIVER = "$EXPOSED_PREFIX.driver"
-    private const val EXPOSED_USER = "$EXPOSED_PREFIX.user"
-    private const val EXPOSED_PASSWD = "$EXPOSED_PREFIX.password"
+    private const val EXPOSED_PREFIX: String = "exposed"
+    private const val EXPOSED_URL: String = "$EXPOSED_PREFIX.url"
+    private const val EXPOSED_DRIVER: String = "$EXPOSED_PREFIX.driver"
+    private const val EXPOSED_USER: String = "$EXPOSED_PREFIX.user"
+    private const val EXPOSED_PASSWD: String = "$EXPOSED_PREFIX.password"
 
     fun Events.connectExposed() : DisposableHandle = subscribe(ApplicationStarted) {
         val config = it.environment.config
