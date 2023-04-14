@@ -6,15 +6,19 @@ import com.dsm.domain.auth.token.JwtGenerator
 import com.dsm.exception.ExceptionResponse
 import com.dsm.persistence.repository.StudentRepository
 import com.dsm.plugins.database.dbQuery
+import io.ktor.events.Events
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStarted
 import io.ktor.server.auth.authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.response.respond
+import kotlinx.coroutines.DisposableHandle
 import org.koin.ktor.ext.getKoin
 import java.util.UUID
+import kotlin.properties.Delegates
 
 /**
  *
@@ -67,26 +71,39 @@ fun Application.configureSecurity() {
     }
 }
 
-class SecurityProperties(config: ApplicationConfig) {
+object SecurityProperties {
 
-    val realm: String = config.property(JWT_REALM).getString()
-    val secret: String = config.property(JWT_SECRET).getString()
-    val audience: String = config.property(JWT_AUDIENCE).getString()
-    val issuer: String = config.property(JWT_ISSUER).getString()
+    lateinit var realm: String
+    lateinit var secret: String
+    lateinit var audience: String
+    lateinit var issuer: String
 
-    val refreshExpiredMillis: Long = config.property(REFRESH_TOKEN_EXPIRED_TIME)
-        .getString().toLong() * millisecondPerSecond
-    val accessExpiredMillis: Long = config.property(ACCESS_TOKEN_EXPIRED_TIME)
-        .getString().toLong() * millisecondPerSecond
+    var refreshExpiredMillis: Long by Delegates.notNull()
+        private set
+    var accessExpiredMillis: Long by Delegates.notNull()
+        private set
 
-    companion object {
+    private const val millisecondPerSecond: Long = 1_000
+
+    fun Events.configureSecurityProperties() : DisposableHandle = subscribe(ApplicationStarted) {
+        val config: ApplicationConfig = it.environment.config
+
+        realm = config.property(Prefix.JWT_REALM).getString()
+        secret = config.property(Prefix.JWT_SECRET).getString()
+        audience = config.property(Prefix.JWT_AUDIENCE).getString()
+        issuer = config.property(Prefix.JWT_ISSUER).getString()
+        refreshExpiredMillis = config.property(Prefix.REFRESH_TOKEN_EXPIRED_TIME)
+            .getString().toLong() * millisecondPerSecond
+        accessExpiredMillis = config.property(Prefix.ACCESS_TOKEN_EXPIRED_TIME)
+            .getString().toLong() * millisecondPerSecond
+    }
+
+    private object Prefix {
         const val JWT_AUDIENCE: String = "jwt.audience"
         const val JWT_SECRET: String = "jwt.secret"
         const val JWT_REALM: String = "jwt.realm"
         const val JWT_ISSUER: String = "jwt.issuer"
         const val REFRESH_TOKEN_EXPIRED_TIME: String = "jwt.token.refresh-expired"
         const val ACCESS_TOKEN_EXPIRED_TIME: String = "jwt.token.access-expired"
-
-        const val millisecondPerSecond: Long = 1000
     }
 }

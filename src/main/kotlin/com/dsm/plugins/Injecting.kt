@@ -45,16 +45,10 @@ fun Application.injectModule() {
         singleOf(::RefreshTokenQueryFactory) bind RefreshTokenRepository::class
     })
 
-    val properties: List<Module> = listOf(
-        module {
-            single { SecurityProperties(environment.config) }
-        }
-    )
-
     stopKoin()
     startKoin {
         modules(
-            auth + factory + properties
+            auth + factory
         )
     }
 }

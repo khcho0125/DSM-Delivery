@@ -1,10 +1,10 @@
 package com.dsm.plugins
 
+import com.dsm.plugins.SecurityProperties.configureSecurityProperties
 import com.dsm.plugins.database.ExposedDataBaseConnector.connectExposed
 import com.dsm.plugins.database.RedisDatabaseConnector.connectRedis
 import com.dsm.plugins.database.RedisDatabaseConnector.disconnectRedis
 import io.ktor.server.application.Application
-
 
 /**
  *
@@ -18,5 +18,6 @@ fun Application.registerEvent() {
         connectExposed()
         connectRedis()
         disconnectRedis()
+        configureSecurityProperties()
     }
 }
