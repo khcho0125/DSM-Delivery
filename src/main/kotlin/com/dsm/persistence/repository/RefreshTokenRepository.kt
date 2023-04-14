@@ -11,4 +11,6 @@ import com.dsm.persistence.entity.RefreshToken
  **/
 interface RefreshTokenRepository {
     suspend fun insert(refreshToken: RefreshToken): RefreshToken
+
+    suspend fun findByToken(token: String): RefreshToken?
 }

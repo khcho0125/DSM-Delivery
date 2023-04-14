@@ -3,7 +3,6 @@ package com.dsm.persistence.factory
 import com.dsm.persistence.entity.RefreshToken
 import com.dsm.persistence.repository.RefreshTokenRepository
 import com.dsm.plugins.database.RedisDatabaseConnector.redisCommands
-import io.lettuce.core.RedisFuture
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
@@ -18,21 +17,26 @@ import java.time.Duration
  **/
 class RefreshTokenQueryFactory : RefreshTokenRepository {
 
-    private fun RedisFuture<String>.toEntity(): RefreshToken =
-        get().let(Json::decodeFromString)
+    private fun key(token: String): String =
+        "$REFRESH_TOKEN_HEAD:$token"
 
     override suspend fun insert(refreshToken: RefreshToken): RefreshToken {
         val refreshTokenAsJson: String = Json
             .encodeToJsonElement(refreshToken).toString()
-        val key = "$REFRESH_TOKEN_HEAD:${refreshToken.token}"
+        val key = key(refreshToken.token)
 
         redisCommands.run {
             set(key, refreshTokenAsJson)
             expire(key, Duration.ofMillis(refreshToken.expired))
         }
 
-        return redisCommands.get(key)!!.toEntity()
+        return redisCommands.get(key)
+            .get().let(Json::decodeFromString)
     }
+
+    override suspend fun findByToken(token: String): RefreshToken? =
+        redisCommands.get(key(token)).get()?.let(Json::decodeFromString)
+
 
     companion object {
         private const val REFRESH_TOKEN_HEAD = "refresh-token"
