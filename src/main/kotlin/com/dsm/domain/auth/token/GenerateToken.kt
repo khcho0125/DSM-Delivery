@@ -42,7 +42,7 @@ class JwtGenerator(
         refreshTokenRepository.insert(RefreshToken(
             token = token,
             studentId = studentId,
-            expired = SecurityProperties.refreshExpiredMillis
+            expiredMillis = SecurityProperties.refreshExpiredMillis
         ))
 
         return token

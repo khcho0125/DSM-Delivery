@@ -18,5 +18,5 @@ data class RefreshToken(
     @Contextual
     val studentId: UUID,
 
-    val expired: Long
+    val expiredMillis: Long
 )
