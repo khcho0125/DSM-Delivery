@@ -18,7 +18,7 @@ import java.time.Duration
 class RefreshTokenQueryFactory : RefreshTokenRepository {
 
     private fun key(token: String): String =
-        "$REFRESH_TOKEN_HEAD:$token"
+        "refresh-token:$token"
 
     override suspend fun insert(refreshToken: RefreshToken): RefreshToken {
         val refreshTokenAsJson: String = Json
@@ -36,10 +36,5 @@ class RefreshTokenQueryFactory : RefreshTokenRepository {
 
     override suspend fun findByToken(token: String): RefreshToken? =
         redisCommands.get(key(token)).get()?.let(Json::decodeFromString)
-
-
-    companion object {
-        private const val REFRESH_TOKEN_HEAD = "refresh-token"
-    }
 
 }

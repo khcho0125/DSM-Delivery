@@ -9,16 +9,10 @@ package com.dsm.exception
  **/
 object StudentException {
 
-    class NotFound(override val message: String? = DefaultMessage.NOTFOUND)
+    class NotFound(override val message: String? = "Student Not Found")
         : DomainException.NotFound(message)
 
-    class IncorrectPassword(override val message: String? = DefaultMessage.INCORRECT_PASSWORD)
+    class IncorrectPassword(override val message: String? = "Password Not Matched")
         : DomainException.Unauthorized(message)
 
-
-
-    private object DefaultMessage {
-        const val NOTFOUND: String = "Student Not Found"
-        const val INCORRECT_PASSWORD: String = "Password Not Matched"
-    }
 }

@@ -9,18 +9,13 @@ package com.dsm.exception
  **/
 object AuthenticateStudentException {
 
-    class AlreadyUsed(override val message: String? = DefaultMessage.ALREADY_USED)
+    class AlreadyUsed(override val message: String? = "Already Registered Student")
         : DomainException.Conflict(message)
 
-    class UnknownName(override val message: String? = DefaultMessage.UNKNOWN_NAME)
+    class UnknownName(override val message: String? = "Unknown Student Name")
         : DomainException.Unauthorized(message)
 
-    class UnknownNumber(override val message: String? = DefaultMessage.UNKNOWN_NUMBER)
+    class UnknownNumber(override val message: String? = "Unknown Student Number")
         : DomainException.Unauthorized(message)
 
-    private object DefaultMessage {
-        const val ALREADY_USED: String = "Already Registered Student"
-        const val UNKNOWN_NAME: String = "Unknown Student Name"
-        const val UNKNOWN_NUMBER: String = "Unknown Student Number"
-    }
 }
