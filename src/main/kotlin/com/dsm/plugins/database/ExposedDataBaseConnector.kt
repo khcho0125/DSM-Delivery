@@ -26,25 +26,28 @@ import org.jetbrains.exposed.sql.transactions.transaction
  **/
 object ExposedDataBaseConnector {
 
+    lateinit var master: Database
+
     fun Events.connectExposed() : DisposableHandle = subscribe(ApplicationStarted) { application: Application ->
         runCatching {
             val config: ApplicationConfig = application.environment.config
 
-            Database.connect(ExposedDataSource.Master(config)).run {
+            master = Database.connect(ExposedDataSource.Master(config)).also { database: Database ->
                 val tables: Array<Table> = arrayOf(
                     MissionTable,
                     StudentTable,
                     AuthenticateStudentTable
                 )
 
-                transaction(this) {
+                transaction(database) {
                     addLogger(StdOutSqlLogger)
                     tables.run(SchemaUtils::create)
                 }
             }
 
-        }.onFailure {
-            it.printStackTrace()
+        }.onFailure { e: Throwable ->
+            e.printStackTrace()
+            throw e
         }
     }
 }
