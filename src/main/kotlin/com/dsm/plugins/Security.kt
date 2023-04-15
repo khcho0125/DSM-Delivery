@@ -6,16 +6,13 @@ import com.dsm.domain.auth.token.JwtGenerator
 import com.dsm.exception.ExceptionResponse
 import com.dsm.persistence.repository.StudentRepository
 import com.dsm.plugins.database.dbQuery
-import io.ktor.events.Events
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
-import io.ktor.server.application.ApplicationStarted
 import io.ktor.server.auth.authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.response.respond
-import kotlinx.coroutines.DisposableHandle
 import org.koin.ktor.ext.getKoin
 import java.util.UUID
 import kotlin.properties.Delegates
@@ -28,18 +25,18 @@ import kotlin.properties.Delegates
  * @date 2023/03/16
  **/
 fun Application.configureSecurity() {
-    val securityProperties: SecurityProperties = getKoin().get()
+    SecurityProperties.init(environment.config)
     val studentRepository: StudentRepository = getKoin().get()
 
     authentication {
         jwt {
-            realm = securityProperties.realm
+            realm = SecurityProperties.realm
 
             verifier(
                 JWT
-                    .require(Algorithm.HMAC256(securityProperties.secret))
-                    .withAudience(securityProperties.audience)
-                    .withIssuer(securityProperties.issuer)
+                    .require(Algorithm.HMAC256(SecurityProperties.secret))
+                    .withAudience(SecurityProperties.audience)
+                    .withIssuer(SecurityProperties.issuer)
                     .withJWTId(JwtGenerator.JWT_ACCESS)
                     .withSubject(JwtGenerator.JWT_SUBJECT)
                     .build()
@@ -85,9 +82,7 @@ object SecurityProperties {
 
     private const val millisecondPerSecond: Long = 1_000
 
-    fun Events.configureSecurityProperties() : DisposableHandle = subscribe(ApplicationStarted) {
-        val config: ApplicationConfig = it.environment.config
-
+    fun init(config: ApplicationConfig) {
         realm = config.property(Prefix.JWT_REALM).getString()
         secret = config.property(Prefix.JWT_SECRET).getString()
         audience = config.property(Prefix.JWT_AUDIENCE).getString()
@@ -99,11 +94,12 @@ object SecurityProperties {
     }
 
     private object Prefix {
-        const val JWT_AUDIENCE: String = "jwt.audience"
-        const val JWT_SECRET: String = "jwt.secret"
-        const val JWT_REALM: String = "jwt.realm"
-        const val JWT_ISSUER: String = "jwt.issuer"
-        const val REFRESH_TOKEN_EXPIRED_TIME: String = "jwt.token.refresh-expired"
-        const val ACCESS_TOKEN_EXPIRED_TIME: String = "jwt.token.access-expired"
+        const val JWT: String = "jwt"
+        const val JWT_AUDIENCE: String = "$JWT.audience"
+        const val JWT_SECRET: String = "$JWT.secret"
+        const val JWT_REALM: String = "$JWT.realm"
+        const val JWT_ISSUER: String = "$JWT.issuer"
+        const val REFRESH_TOKEN_EXPIRED_TIME: String = "$JWT.token.refresh-expired"
+        const val ACCESS_TOKEN_EXPIRED_TIME: String = "$JWT.token.access-expired"
     }
 }

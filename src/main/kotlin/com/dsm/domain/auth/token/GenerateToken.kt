@@ -27,7 +27,6 @@ data class TokenResult(
 )
 
 class JwtGenerator(
-    private val securityProperties: SecurityProperties,
     private val refreshTokenRepository: RefreshTokenRepository
 ) : TokenProvider {
 
@@ -35,15 +34,15 @@ class JwtGenerator(
         val token: String = JWT.create()
             .withSubject(JWT_SUBJECT)
             .withJWTId(JWT_REFRESH)
-            .withAudience(securityProperties.audience)
-            .withIssuer(securityProperties.issuer)
-            .withExpiresAt(Date(System.currentTimeMillis() + securityProperties.refreshExpiredMillis))
-            .sign(Algorithm.HMAC256(securityProperties.secret))
+            .withAudience(SecurityProperties.audience)
+            .withIssuer(SecurityProperties.issuer)
+            .withExpiresAt(Date(System.currentTimeMillis() + SecurityProperties.refreshExpiredMillis))
+            .sign(Algorithm.HMAC256(SecurityProperties.secret))
 
         refreshTokenRepository.insert(RefreshToken(
             token = token,
             studentId = studentId,
-            expired = securityProperties.refreshExpiredMillis
+            expired = SecurityProperties.refreshExpiredMillis
         ))
 
         return token
@@ -53,11 +52,11 @@ class JwtGenerator(
         return JWT.create()
             .withSubject(JWT_SUBJECT)
             .withJWTId(JWT_ACCESS)
-            .withAudience(securityProperties.audience)
-            .withIssuer(securityProperties.issuer)
+            .withAudience(SecurityProperties.audience)
+            .withIssuer(SecurityProperties.issuer)
             .withClaim(JWT_STUDENT_ID, studentId.toString())
-            .withExpiresAt(Date(System.currentTimeMillis() + securityProperties.accessExpiredMillis))
-            .sign(Algorithm.HMAC256(securityProperties.secret))
+            .withExpiresAt(Date(System.currentTimeMillis() + SecurityProperties.accessExpiredMillis))
+            .sign(Algorithm.HMAC256(SecurityProperties.secret))
     }
 
     override suspend fun generateToken(studentId: UUID): TokenResult {
@@ -68,7 +67,7 @@ class JwtGenerator(
             accessToken = accessToken,
             refreshToken = refreshToken,
             accessTokenExpired = LocalDateTime.now()
-                .plusNanos(securityProperties.accessExpiredMillis).withNano(0)
+                .plusNanos(SecurityProperties.accessExpiredMillis).withNano(0)
         )
     }
 
