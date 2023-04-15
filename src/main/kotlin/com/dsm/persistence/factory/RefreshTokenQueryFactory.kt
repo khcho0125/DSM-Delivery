@@ -3,10 +3,12 @@ package com.dsm.persistence.factory
 import com.dsm.persistence.entity.RefreshToken
 import com.dsm.persistence.repository.RefreshTokenRepository
 import com.dsm.plugins.database.RedisDatabaseConnector.redisCommands
+import io.lettuce.core.ExperimentalLettuceCoroutinesApi
+import io.lettuce.core.TransactionResult
+import io.lettuce.core.api.async.multi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
-import java.time.Duration
 
 /**
  *
@@ -15,6 +17,7 @@ import java.time.Duration
  * @author Chokyunghyeon
  * @date 2023/04/09
  **/
+@OptIn(ExperimentalLettuceCoroutinesApi::class)
 class RefreshTokenQueryFactory : RefreshTokenRepository {
 
     private fun key(token: String): String =
@@ -25,13 +28,12 @@ class RefreshTokenQueryFactory : RefreshTokenRepository {
             .encodeToJsonElement(refreshToken).toString()
         val key = key(refreshToken.token)
 
-        redisCommands.run {
-            set(key, refreshTokenAsJson)
-            expire(key, Duration.ofMillis(refreshToken.expired))
+        val result: TransactionResult = redisCommands.multi {
+            psetex(key, refreshToken.expiredMillis, refreshTokenAsJson)
+            get(key)
         }
 
-        return redisCommands.get(key)
-            .get().let(Json::decodeFromString)
+        return result.first().toString().let(Json::decodeFromString)
     }
 
     override suspend fun findByToken(token: String): RefreshToken? =
