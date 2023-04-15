@@ -5,6 +5,7 @@ import com.dsm.api.StudentApi
 import com.dsm.domain.auth.token.JwtGenerator
 import com.dsm.domain.auth.token.TokenProvider
 import com.dsm.domain.auth.usecase.RegisterStudent
+import com.dsm.domain.auth.usecase.ReissueToken
 import com.dsm.domain.auth.usecase.StudentLogin
 import com.dsm.persistence.factory.AuthenticateStudentQueryFactory
 import com.dsm.persistence.factory.RefreshTokenQueryFactory
@@ -32,6 +33,7 @@ fun Application.injectModule() {
         module {
             singleOf(::StudentLogin)
             singleOf(::RegisterStudent)
+            singleOf(::ReissueToken)
             singleOf(::StudentApi) bind Api::class
         },
         module {
