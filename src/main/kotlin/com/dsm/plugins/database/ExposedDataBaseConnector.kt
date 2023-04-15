@@ -6,7 +6,9 @@ import com.dsm.persistence.entity.StudentTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.events.Events
+import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationStarted
+import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.DisposableHandle
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -24,35 +26,52 @@ import org.jetbrains.exposed.sql.transactions.transaction
  **/
 object ExposedDataBaseConnector {
 
-    private const val EXPOSED_PREFIX: String = "exposed"
-    private const val EXPOSED_URL: String = "$EXPOSED_PREFIX.url"
-    private const val EXPOSED_DRIVER: String = "$EXPOSED_PREFIX.driver"
-    private const val EXPOSED_USER: String = "$EXPOSED_PREFIX.user"
-    private const val EXPOSED_PASSWD: String = "$EXPOSED_PREFIX.password"
+    fun Events.connectExposed() : DisposableHandle = subscribe(ApplicationStarted) { application: Application ->
+        runCatching {
+            val config: ApplicationConfig = application.environment.config
 
-    fun Events.connectExposed() : DisposableHandle = subscribe(ApplicationStarted) {
-        val config = it.environment.config
+            Database.connect(ExposedDataSource.Master(config)).run {
+                val tables: Array<Table> = arrayOf(
+                    MissionTable,
+                    StudentTable,
+                    AuthenticateStudentTable
+                )
 
-        val database = Database.connect(
-            HikariDataSource(
-                HikariConfig().apply {
-                    driverClassName = config.property(EXPOSED_DRIVER).getString()
-                    jdbcUrl = config.property(EXPOSED_URL).getString()
-                    username = config.property(EXPOSED_USER).getString()
-                    password = config.property(EXPOSED_PASSWD).getString()
+                transaction(this) {
+                    addLogger(StdOutSqlLogger)
+                    tables.run(SchemaUtils::create)
                 }
-            )
-        )
+            }
 
-        val tables: Array<Table> = arrayOf(
-            MissionTable,
-            StudentTable,
-            AuthenticateStudentTable
-        )
-
-        transaction(database) {
-            addLogger(StdOutSqlLogger)
-            tables.run(SchemaUtils::create)
+        }.onFailure {
+            it.printStackTrace()
         }
+    }
+}
+
+sealed class ExposedDataSource(
+    path: String,
+    config: ApplicationConfig
+) : HikariDataSource(HikariConfig().apply {
+    config.config("${Prefix.DATASOURCE}.$path").run {
+        driverClassName = property(Prefix.DRIVER).getString()
+        username = property(Prefix.USER).getString()
+        jdbcUrl = property(Prefix.URL).getString()
+        password = property(Prefix.PASSWD).getString()
+    }
+}) {
+
+    class Master(config: ApplicationConfig) : ExposedDataSource(MASTER, config)
+
+    private companion object {
+        const val MASTER: String = "master"
+    }
+
+    private object Prefix {
+        const val DATASOURCE: String = "exposed.datasource"
+        const val DRIVER: String = "driver"
+        const val USER: String = "user"
+        const val PASSWD: String = "password"
+        const val URL: String = "url"
     }
 }
