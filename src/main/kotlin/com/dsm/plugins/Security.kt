@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.dsm.domain.auth.token.JwtGenerator
 import com.dsm.exception.ExceptionResponse
 import com.dsm.persistence.repository.StudentRepository
-import com.dsm.plugins.DataBaseFactory.dbQuery
+import com.dsm.plugins.database.dbQuery
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.auth.authentication
@@ -15,6 +15,7 @@ import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.response.respond
 import org.koin.ktor.ext.getKoin
 import java.util.UUID
+import kotlin.properties.Delegates
 
 /**
  *
@@ -24,18 +25,18 @@ import java.util.UUID
  * @date 2023/03/16
  **/
 fun Application.configureSecurity() {
-    val securityProperties: SecurityProperties = getKoin().get()
+    SecurityProperties.init(environment.config)
     val studentRepository: StudentRepository = getKoin().get()
 
     authentication {
         jwt {
-            realm = securityProperties.realm
+            realm = SecurityProperties.realm
 
             verifier(
                 JWT
-                    .require(Algorithm.HMAC256(securityProperties.secret))
-                    .withAudience(securityProperties.audience)
-                    .withIssuer(securityProperties.issuer)
+                    .require(Algorithm.HMAC256(SecurityProperties.secret))
+                    .withAudience(SecurityProperties.audience)
+                    .withIssuer(SecurityProperties.issuer)
                     .withJWTId(JwtGenerator.JWT_ACCESS)
                     .withSubject(JwtGenerator.JWT_SUBJECT)
                     .build()
@@ -43,12 +44,13 @@ fun Application.configureSecurity() {
 
             validate { credential ->
                 dbQuery {
-                    credential.payload.getClaim(JwtGenerator.JWT_STUDENT_ID).asString()?.let {
-                        if (studentRepository.existsById(it.let(UUID::fromString))) {
-                            null
-                        } else {
-                            JWTPrincipal(credential.payload)
-                        }
+                    val studentId: String = credential.payload.getClaim(JwtGenerator.JWT_STUDENT_ID).asString()
+                        ?: return@dbQuery null
+
+                    return@dbQuery if (studentRepository.existsById(studentId.let(UUID::fromString))) {
+                        null
+                    } else {
+                        JWTPrincipal(credential.payload)
                     }
                 }
             }
@@ -66,26 +68,38 @@ fun Application.configureSecurity() {
     }
 }
 
-class SecurityProperties(config: ApplicationConfig) {
+object SecurityProperties {
 
-    val realm: String = config.property(JWT_REALM).getString()
-    val secret: String = config.property(JWT_SECRET).getString()
-    val audience: String = config.property(JWT_AUDIENCE).getString()
-    val issuer: String = config.property(JWT_ISSUER).getString()
+    lateinit var realm: String
+    lateinit var secret: String
+    lateinit var audience: String
+    lateinit var issuer: String
 
-    val refreshExpiredMillis: Long = config.property(REFRESH_TOKEN_EXPIRED_TIME)
-        .getString().toLong() * millisecondPerSecond
-    val accessExpiredMillis: Long = config.property(ACCESS_TOKEN_EXPIRED_TIME)
-        .getString().toLong() * millisecondPerSecond
+    var refreshExpiredMillis: Long by Delegates.notNull()
+        private set
+    var accessExpiredMillis: Long by Delegates.notNull()
+        private set
 
-    private companion object {
-        const val JWT_AUDIENCE: String = "jwt.audience"
-        const val JWT_SECRET: String = "jwt.secret"
-        const val JWT_REALM: String = "jwt.realm"
-        const val JWT_ISSUER: String = "jwt.issuer"
-        const val REFRESH_TOKEN_EXPIRED_TIME: String = "jwt.token.refresh-expired"
-        const val ACCESS_TOKEN_EXPIRED_TIME: String = "jwt.token.access-expired"
+    private const val millisecondPerSecond: Long = 1_000
 
-        const val millisecondPerSecond: Long = 1000
+    fun init(config: ApplicationConfig) {
+        realm = config.property(Prefix.JWT_REALM).getString()
+        secret = config.property(Prefix.JWT_SECRET).getString()
+        audience = config.property(Prefix.JWT_AUDIENCE).getString()
+        issuer = config.property(Prefix.JWT_ISSUER).getString()
+        refreshExpiredMillis = config.property(Prefix.REFRESH_TOKEN_EXPIRED_TIME)
+            .getString().toLong() * millisecondPerSecond
+        accessExpiredMillis = config.property(Prefix.ACCESS_TOKEN_EXPIRED_TIME)
+            .getString().toLong() * millisecondPerSecond
+    }
+
+    private object Prefix {
+        const val JWT: String = "jwt"
+        const val JWT_AUDIENCE: String = "$JWT.audience"
+        const val JWT_SECRET: String = "$JWT.secret"
+        const val JWT_REALM: String = "$JWT.realm"
+        const val JWT_ISSUER: String = "$JWT.issuer"
+        const val REFRESH_TOKEN_EXPIRED_TIME: String = "$JWT.token.refresh-expired"
+        const val ACCESS_TOKEN_EXPIRED_TIME: String = "$JWT.token.access-expired"
     }
 }

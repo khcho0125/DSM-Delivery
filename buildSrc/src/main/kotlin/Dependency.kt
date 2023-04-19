@@ -6,7 +6,7 @@ object Dependency {
 
     // negotiation
     const val KTOR_NEGOTIATION: String = "io.ktor:ktor-server-content-negotiation:${Version.KTOR}"
-    const val KTOR_SERIALIZATION: String = "io.ktor:ktor-serialization-kotlinx-json:${Version.KTOR}"
+    const val KTOR_SERIALIZATION: String = "io.ktor:ktor-serialization-kotlinx-json-jvm:${Version.KTOR}"
 
     // auth
     const val KTOR_AUTH: String = "io.ktor:ktor-server-auth-jvm:${Version.KTOR}"
@@ -29,6 +29,8 @@ object Dependency {
     const val EXPOSED_TIME: String = "org.jetbrains.exposed:exposed-java-time:${Version.EXPOSED}"
     const val MYSQL: String = "com.mysql:mysql-connector-j:${Version.MYSQL}"
     const val HIKARI: String = "com.zaxxer:HikariCP:${Version.HIKARI}"
+
+    const val LETTUCE: String = "io.lettuce:lettuce-core:${Version.LETTUCE}"
 
     // koin
     const val KOIN_LOGGER: String = "io.insert-koin:koin-logger-slf4j:${Version.KOIN}"

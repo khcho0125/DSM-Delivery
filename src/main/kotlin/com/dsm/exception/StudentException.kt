@@ -1,5 +1,7 @@
 package com.dsm.exception
 
+import io.ktor.http.HttpStatusCode
+
 /**
  *
  * 학생에 관한 예외를 발생시키는 StudentException
@@ -9,16 +11,24 @@ package com.dsm.exception
  **/
 object StudentException {
 
-    class NotFound(override val message: String? = DefaultMessage.NOTFOUND)
-        : DomainException.NotFound(message)
+    class NotFound(override val message: String? = null)
+        : DomainException(message, StudentErrorCode.NOT_FOUND)
 
-    class IncorrectPassword(override val message: String? = DefaultMessage.INCORRECT_PASSWORD)
-        : DomainException.Unauthorized(message)
+    class IncorrectPassword(override val message: String? = null)
+        : DomainException(message, StudentErrorCode.INCORRECT_PASSWORD)
 
+}
 
+enum class StudentErrorCode(
+    override val sequence: Int,
+    override val defaultMessage: String,
+    override val status: HttpStatusCode
+) : ErrorCode {
 
-    private object DefaultMessage {
-        const val NOTFOUND: String = "Student Not Found"
-        const val INCORRECT_PASSWORD: String = "Password Not Matched"
-    }
+    NOT_FOUND(1, "Student Not Found", HttpStatusCode.NotFound),
+    INCORRECT_PASSWORD(2, "Password Not Matched", HttpStatusCode.Unauthorized),
+
+    ;
+
+    override val header: String = "STUDENT"
 }

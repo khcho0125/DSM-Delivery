@@ -2,6 +2,8 @@ package com.dsm.domain.auth.token
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.dsm.persistence.entity.RefreshToken
+import com.dsm.persistence.repository.RefreshTokenRepository
 import com.dsm.plugins.SecurityProperties
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -25,35 +27,47 @@ data class TokenResult(
 )
 
 class JwtGenerator(
-    private val securityProperties: SecurityProperties
+    private val refreshTokenRepository: RefreshTokenRepository
 ) : TokenProvider {
 
-    private fun generateRefreshToken(): String {
-        return JWT.create()
+    private suspend fun generateRefreshToken(studentId: UUID): String {
+        val token: String = JWT.create()
             .withSubject(JWT_SUBJECT)
             .withJWTId(JWT_REFRESH)
-            .withAudience(securityProperties.audience)
-            .withIssuer(securityProperties.issuer)
-            .withExpiresAt(Date(System.currentTimeMillis() + securityProperties.refreshExpiredMillis))
-            .sign(Algorithm.HMAC256(securityProperties.secret))
+            .withAudience(SecurityProperties.audience)
+            .withIssuer(SecurityProperties.issuer)
+            .withExpiresAt(Date(System.currentTimeMillis() + SecurityProperties.refreshExpiredMillis))
+            .sign(Algorithm.HMAC256(SecurityProperties.secret))
+
+        refreshTokenRepository.insert(RefreshToken(
+            token = token,
+            studentId = studentId,
+            expiredMillis = SecurityProperties.refreshExpiredMillis
+        ))
+
+        return token
     }
 
     private fun generateAccessToken(studentId: UUID): String {
         return JWT.create()
             .withSubject(JWT_SUBJECT)
             .withJWTId(JWT_ACCESS)
-            .withAudience(securityProperties.audience)
-            .withIssuer(securityProperties.issuer)
+            .withAudience(SecurityProperties.audience)
+            .withIssuer(SecurityProperties.issuer)
             .withClaim(JWT_STUDENT_ID, studentId.toString())
-            .withExpiresAt(Date(System.currentTimeMillis() + securityProperties.accessExpiredMillis))
-            .sign(Algorithm.HMAC256(securityProperties.secret))
+            .withExpiresAt(Date(System.currentTimeMillis() + SecurityProperties.accessExpiredMillis))
+            .sign(Algorithm.HMAC256(SecurityProperties.secret))
     }
 
     override suspend fun generateToken(studentId: UUID): TokenResult {
+        val accessToken: String = generateAccessToken(studentId)
+        val refreshToken: String = generateRefreshToken(studentId)
+
         return TokenResult(
-            accessToken = generateAccessToken(studentId),
-            refreshToken = generateRefreshToken(),
-            accessTokenExpired = LocalDateTime.now().plusNanos(securityProperties.accessExpiredMillis).withNano(0)
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            accessTokenExpired = LocalDateTime.now()
+                .plusNanos(SecurityProperties.accessExpiredMillis).withNano(0)
         )
     }
 

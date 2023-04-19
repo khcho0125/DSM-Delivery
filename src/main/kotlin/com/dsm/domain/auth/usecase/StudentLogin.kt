@@ -5,7 +5,7 @@ import com.dsm.domain.auth.token.TokenResult
 import com.dsm.exception.StudentException
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.StudentRepository
-import com.dsm.plugins.DataBaseFactory.dbQuery
+import com.dsm.plugins.database.dbQuery
 import kotlinx.serialization.Serializable
 
 /**
@@ -26,7 +26,7 @@ class StudentLogin(
 
         student.verifyPassword(request.password)
 
-        tokenProvider.generateToken(student.id)
+        return@dbQuery tokenProvider.generateToken(student.id)
     }
 
     @Serializable

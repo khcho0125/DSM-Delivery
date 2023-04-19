@@ -20,7 +20,7 @@ object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
     private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME
 
     override val descriptor: SerialDescriptor =
-        PrimitiveSerialDescriptor("LocalDateTime", PrimitiveKind.STRING)
+        PrimitiveSerialDescriptor(LocalDateTime::class.simpleName!!, PrimitiveKind.STRING)
 
     override fun deserialize(decoder: Decoder): LocalDateTime = 
         LocalDateTime.parse(decoder.decodeString(), formatter)

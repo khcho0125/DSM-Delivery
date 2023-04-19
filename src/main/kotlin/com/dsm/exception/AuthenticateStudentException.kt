@@ -1,5 +1,7 @@
 package com.dsm.exception
 
+import io.ktor.http.HttpStatusCode
+
 /**
  *
  * 학생 인증에 관한 예외를 발생시키는 AuthenticateStudentException
@@ -9,18 +11,28 @@ package com.dsm.exception
  **/
 object AuthenticateStudentException {
 
-    class AlreadyUsed(override val message: String? = DefaultMessage.ALREADY_USED)
-        : DomainException.Conflict(message)
+    class AlreadyUsed(override val message: String? = null)
+        : DomainException(message, AuthenticateStudentErrorCode.ALREADY_USED)
 
-    class UnknownName(override val message: String? = DefaultMessage.UNKNOWN_NAME)
-        : DomainException.Unauthorized(message)
+    class UnknownName(override val message: String? = null)
+        : DomainException(message, AuthenticateStudentErrorCode.UNKNOWN_NAME)
 
-    class UnknownNumber(override val message: String? = DefaultMessage.UNKNOWN_NUMBER)
-        : DomainException.Unauthorized(message)
+    class UnknownNumber(override val message: String? = null)
+        : DomainException(message, AuthenticateStudentErrorCode.UNKNOWN_NUMBER)
 
-    private object DefaultMessage {
-        const val ALREADY_USED: String = "Already Registered Student"
-        const val UNKNOWN_NAME: String = "Unknown Student Name"
-        const val UNKNOWN_NUMBER: String = "Unknown Student Number"
-    }
+}
+
+enum class AuthenticateStudentErrorCode(
+    override val sequence: Int,
+    override val defaultMessage: String,
+    override val status: HttpStatusCode
+) : ErrorCode {
+
+    ALREADY_USED(1, "Already Registered Student", HttpStatusCode.Conflict),
+    UNKNOWN_NAME(2, "Unknown Student Name", HttpStatusCode.Unauthorized),
+    UNKNOWN_NUMBER(3, "Unknown Student Number", HttpStatusCode.Unauthorized)
+
+    ;
+
+    override val header: String = "AUTH"
 }

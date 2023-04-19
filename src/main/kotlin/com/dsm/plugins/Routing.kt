@@ -12,7 +12,7 @@ import org.koin.java.KoinJavaComponent.getKoin
  * @date 2023/03/16
  **/
 fun Application.configureRouting() {
-    getKoin().getAll<Api>().toSet().forEach {
+    getKoin().getAll<Api>().forEach {
         it(this)
     }
 }
