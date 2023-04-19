@@ -1,8 +1,6 @@
 package com.dsm.plugins
 
 import com.dsm.exception.DomainException
-import com.dsm.exception.ExceptionResponse
-import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.statuspages.StatusPages
@@ -19,21 +17,14 @@ fun Application.configureHandling() {
     install(StatusPages) {
         exception<Throwable> { call, cause ->
             when (cause) {
-                is DomainException -> {
+                is DomainException -> call.respond(
+                    message = cause.toResponse(),
+                    status = cause.code.status
+                )
+                else -> DomainException.InternalServerError().run {
                     call.respond(
-                        message = cause.toResponse(),
-                        status = cause.status
-                    )
-                }
-                else -> {
-                    call.respond(
-                        message = HttpStatusCode.InternalServerError.run {
-                            ExceptionResponse(
-                                message = description,
-                                status = value
-                            )
-                        },
-                        status = HttpStatusCode.InternalServerError
+                        message = toResponse(),
+                        status = code.status
                     )
                 }
             }
