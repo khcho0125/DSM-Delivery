@@ -14,37 +14,16 @@ repositories {
 }
 
 dependencies {
-    implementation(Dependency.KTOR_CORE)
-    implementation(Dependency.KTOR_NETTY)
-
-    implementation(Dependency.EXPOSED_CORE)
-    implementation(Dependency.EXPOSED_DAO)
-    implementation(Dependency.EXPOSED_JDBC)
-    implementation(Dependency.EXPOSED_TIME)
-    implementation(Dependency.MYSQL)
-    implementation(Dependency.HIKARI)
-    implementation(Dependency.LETTUCE)
-
-    implementation(Dependency.KTOR_NEGOTIATION)
-    implementation(Dependency.KTOR_SERIALIZATION)
-
-    implementation(Dependency.KOIN)
-    implementation(Dependency.KOIN_LOGGER)
-
-    implementation(Dependency.KTOR_AUTH)
-    implementation(Dependency.KTOR_AUTH_JWT)
-    implementation(Dependency.KTOR_CORS)
-    implementation(Dependency.BCRYPT)
-
-    implementation(Dependency.KTOR_LOGGING)
-    implementation(Dependency.LOGBACK)
-
-    implementation(Dependency.STATUS_PAGES)
-
-    implementation(Dependency.KTOR_TEST)
-    implementation(Dependency.KOTLIN_TEST)
-
-    detektPlugins(Dependency.DETEKT)
+    includeLibrary(Library.JVM)
+    includeLibrary(Library.Auth)
+    includeLibrary(Library.Negotiation)
+    includeLibrary(Library.Logging)
+    includeLibrary(Library.Exposed)
+    includeLibrary(Library.Lettuce)
+    includeLibrary(Library.Koin)
+    includeLibrary(Library.ExceptionHandling)
+    includeLibrary(Library.Test)
+    includeLibrary(Library.Detekt)
 }
 
 detekt {
