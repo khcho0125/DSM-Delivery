@@ -23,8 +23,9 @@ interface Library {
 
     object Negotiation : Library {
         override val dependency: List<Pair<String, Configure>> = listOf(
-            "io.ktor:ktor-serialization-kotlinx-json-jvm:${Version.KTOR}" to Configure.IMPLEMENTATION,
+            "io.ktor:ktor-serialization-jackson-jvm:${Version.KTOR}" to Configure.IMPLEMENTATION,
             "io.ktor:ktor-server-content-negotiation:${Version.KTOR}" to Configure.IMPLEMENTATION,
+            "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${Version.JACKSON}" to Configure.IMPLEMENTATION
         )
     }
 

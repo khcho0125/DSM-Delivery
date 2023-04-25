@@ -3,12 +3,10 @@ package com.dsm.persistence.factory
 import com.dsm.persistence.entity.RefreshToken
 import com.dsm.persistence.repository.RefreshTokenRepository
 import com.dsm.plugins.database.RedisDatabaseConnector.redisCommands
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.lettuce.core.ExperimentalLettuceCoroutinesApi
-import io.lettuce.core.TransactionResult
 import io.lettuce.core.api.async.multi
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToJsonElement
 
 /**
  *
@@ -20,23 +18,22 @@ import kotlinx.serialization.json.encodeToJsonElement
 @OptIn(ExperimentalLettuceCoroutinesApi::class)
 class RefreshTokenQueryFactory : RefreshTokenRepository {
 
-    private fun key(token: String): String =
+    private fun redisKey(token: String): String =
         "refresh-token:$token"
 
     override suspend fun insert(refreshToken: RefreshToken): RefreshToken {
-        val refreshTokenAsJson: String = Json
-            .encodeToJsonElement(refreshToken).toString()
-        val key = key(refreshToken.token)
+        val refreshTokenAsJson: String = jacksonObjectMapper()
+            .writeValueAsString(refreshToken)
+        val key: String = redisKey(refreshToken.token)
 
-        val result: TransactionResult = redisCommands.multi {
+        redisCommands.multi {
             psetex(key, refreshToken.expiredMillis, refreshTokenAsJson)
-            get(key)
         }
 
-        return result.first().toString().let(Json::decodeFromString)
+        return refreshToken
     }
 
     override suspend fun findByToken(token: String): RefreshToken? =
-        redisCommands.get(key(token)).get()?.let(Json::decodeFromString)
+        redisCommands.get(redisKey(token)).get()?.let(jacksonObjectMapper()::readValue)
 
 }

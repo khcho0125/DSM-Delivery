@@ -1,13 +1,28 @@
 package com.dsm.plugins
 
-import com.dsm.serializer.LocalDateTimeSerializer
-import io.ktor.serialization.kotlinx.json.json
+import com.fasterxml.jackson.core.util.DefaultIndenter
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.deser.std.UUIDDeserializer
+import com.fasterxml.jackson.databind.ser.std.UUIDSerializer
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer
+import com.fasterxml.jackson.module.kotlin.addDeserializer
+import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.UUID
+
 
 /**
  *
@@ -17,15 +32,37 @@ import java.time.LocalDateTime
  * @date 2023/03/23
  **/
 fun Application.configureNegotiating() {
-    val serializers = SerializersModule {
-        contextual(LocalDateTime::class, LocalDateTimeSerializer)
-    }
-
     install(ContentNegotiation) {
-        json(Json {
-            serializersModule = serializers
-            prettyPrint = true
-            isLenient = true
-        })
+        jackson {
+            configure(SerializationFeature.INDENT_OUTPUT, true)
+
+            setDefaultPrettyPrinter(DefaultPrettyPrinter().apply {
+                indentArraysWith(DefaultPrettyPrinter.FixedSpaceIndenter.instance)
+                indentObjectsWith(DefaultIndenter())
+            })
+
+            registerModule(JavaTimeModule().apply {
+                addSerializer(LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME))
+                addDeserializer(
+                    LocalDateTime::class,
+                    LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME)
+                )
+                addSerializer(LocalDateSerializer(DateTimeFormatter.ISO_DATE))
+                addDeserializer(
+                    LocalDate::class,
+                    LocalDateDeserializer(DateTimeFormatter.ISO_DATE)
+                )
+                addSerializer(LocalTimeSerializer(DateTimeFormatter.ISO_TIME))
+                addDeserializer(
+                    LocalTime::class,
+                    LocalTimeDeserializer(DateTimeFormatter.ISO_TIME)
+                )
+                addSerializer(UUIDSerializer())
+                addDeserializer(
+                    UUID::class,
+                    UUIDDeserializer()
+                )
+            })
+        }
     }
 }
