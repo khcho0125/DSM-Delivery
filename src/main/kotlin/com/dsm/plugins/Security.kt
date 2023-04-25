@@ -3,10 +3,9 @@ package com.dsm.plugins
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.dsm.domain.auth.token.JwtGenerator
-import com.dsm.exception.ExceptionResponse
+import com.dsm.exception.RefreshTokenException
 import com.dsm.persistence.repository.StudentRepository
 import com.dsm.plugins.database.dbQuery
-import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.auth.authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
@@ -56,13 +55,12 @@ fun Application.configureSecurity() {
             }
 
             challenge { _, _ ->
-                call.respond(
-                    message = ExceptionResponse(
-                        message = "Token is not valid or has expired",
-                        status = HttpStatusCode.Unauthorized.value
-                    ),
-                    status = HttpStatusCode.Unauthorized
-                )
+                RefreshTokenException.ValidToken().run {
+                    call.respond(
+                        message = toResponse(),
+                        status = code.status
+                    )
+                }
             }
         }
     }

@@ -11,9 +11,11 @@ import io.ktor.http.HttpStatusCode
  **/
 object RefreshTokenException {
 
-    class NotFound(override val message: String? = "RefreshToken Not Found")
+    class NotFound(override val message: String? = null)
         : DomainException(message, RefreshTokenErrorCode.NOT_FOUND)
 
+    class ValidToken(override val message: String? = null)
+        : DomainException(message, RefreshTokenErrorCode.VALID_TOKEN)
 }
 
 enum class RefreshTokenErrorCode(
@@ -22,7 +24,8 @@ enum class RefreshTokenErrorCode(
     override val status: HttpStatusCode
 ) : ErrorCode {
 
-    NOT_FOUND(1, "RefreshToken Not Found", HttpStatusCode.NotFound)
+    NOT_FOUND(1, "RefreshToken Not Found", HttpStatusCode.NotFound),
+    VALID_TOKEN(1, "Token is not valid or has expired", HttpStatusCode.Unauthorized),
 
     ;
 
