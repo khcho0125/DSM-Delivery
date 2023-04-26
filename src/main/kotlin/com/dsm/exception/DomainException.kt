@@ -20,30 +20,20 @@ sealed class DomainException(
         code = code.serial()
     )
 
-    class NotFound(
-        override val message: String? = null,
-        override val code: ErrorCode = DomainErrorCode.NOT_FOUND
-    ) : DomainException(message, code)
+    class NotFound(override val message: String? = null)
+        : DomainException(message, DomainErrorCode.NOT_FOUND)
 
-    class Unauthorized(
-        override val message: String? = null,
-        override val code: ErrorCode = DomainErrorCode.UNAUTHORIZED
-    ) : DomainException(message, code)
+    class Unauthorized(override val message: String? = null)
+        : DomainException(message, DomainErrorCode.UNAUTHORIZED)
 
-    class BadRequest(
-        override val message: String? = null,
-        override val code: ErrorCode = DomainErrorCode.BAD_REQUEST
-    ) : DomainException(message, code)
+    class BadRequest(override val message: String? = null)
+        : DomainException(message, DomainErrorCode.BAD_REQUEST)
 
-    class Conflict(
-        override val message: String? = null,
-        override val code: ErrorCode = DomainErrorCode.CONFLICT
-    ) : DomainException(message, code)
+    class Conflict(override val message: String? = null)
+        : DomainException(message, DomainErrorCode.CONFLICT)
 
-    class InternalServerError(
-        override val message: String? = null,
-        override val code: ErrorCode = DomainErrorCode.INTERNAL_SERVER_ERROR
-    ) : DomainException(message, code)
+    class InternalServerError(override val message: String? = null)
+        : DomainException(message, DomainErrorCode.INTERNAL_SERVER_ERROR)
 }
 
 @Serializable

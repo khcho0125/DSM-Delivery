@@ -1,6 +1,6 @@
 object Version {
     const val LOGBACK: String = "1.4.5"
-    const val KTOR: String = "2.2.4"
+    const val KTOR: String = "2.3.0"
     const val KOTLIN: String = "1.8.10"
     const val MYSQL: String = "8.0.32"
     const val EXPOSED: String = "0.41.1"
@@ -9,4 +9,5 @@ object Version {
     const val BCRYPT: String = "0.4"
     const val DETEKT: String = "1.22.0"
     const val LETTUCE: String = "6.2.3.RELEASE"
+    const val JACKSON: String = "2.15.0"
 }
