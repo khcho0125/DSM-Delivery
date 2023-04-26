@@ -1,12 +1,14 @@
 package com.dsm.plugins
 
 import com.dsm.api.Api
+import com.dsm.api.MissionApi
 import com.dsm.api.StudentApi
 import com.dsm.domain.auth.token.JwtGenerator
 import com.dsm.domain.auth.token.TokenProvider
 import com.dsm.domain.auth.usecase.RegisterStudent
 import com.dsm.domain.auth.usecase.ReissueToken
 import com.dsm.domain.auth.usecase.StudentLogin
+import com.dsm.domain.mission.usecase.PostMission
 import com.dsm.persistence.factory.AuthenticateStudentQueryFactory
 import com.dsm.persistence.factory.RefreshTokenQueryFactory
 import com.dsm.persistence.factory.StudentQueryFactory
@@ -41,6 +43,13 @@ fun Application.injectModule() {
         }
     )
 
+    val mission: List<Module> = listOf(
+        module {
+            singleOf(::PostMission)
+            singleOf(::MissionApi) bind Api::class
+        }
+    )
+
     val factory: List<Module> = listOf(module {
         singleOf(::StudentQueryFactory) bind StudentRepository::class
         singleOf(::AuthenticateStudentQueryFactory) bind AuthenticateStudentRepository::class
@@ -50,7 +59,9 @@ fun Application.injectModule() {
     stopKoin()
     startKoin {
         modules(
-            auth + factory
+            factory
+                    + auth
+                    + mission
         )
     }
 }
