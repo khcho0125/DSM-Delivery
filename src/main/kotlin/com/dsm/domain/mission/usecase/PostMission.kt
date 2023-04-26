@@ -26,12 +26,14 @@ class PostMission(
         missionRepository.insert(Mission.doPost(
             studentId = studentId,
             stuff = request.stuff,
-            deadline = request.deadline
+            deadline = request.deadline,
+            price = request.price
         ))
     }
 
     data class Request(
         val stuff: String,
-        val deadline: LocalDateTime
+        val deadline: LocalDateTime,
+        val price: Long
     )
 }

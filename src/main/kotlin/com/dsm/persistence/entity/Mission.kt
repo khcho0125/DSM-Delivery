@@ -19,6 +19,7 @@ object MissionTable : UUIDTable("tbl_mission") {
     val deliveryman: Column<EntityID<UUID>?> = reference("delivery_man_id", StudentTable).nullable()
     val stuff: Column<String> = varchar("stuff", Mission.STUFF_MAX_LENGTH)
     val deadline: Column<LocalDateTime> = datetime("deadline")
+    val price: Column<Long> = long("price")
     val state: Column<DeliveryState> = enumerationByName("state", DeliveryState.STATE_MAX_LENGTH)
 }
 
@@ -36,17 +37,19 @@ data class Mission(
     val deliverymanId: UUID?,
     val stuff: String,
     val deadline: LocalDateTime,
+    val price: Long,
     val state: DeliveryState
 ) {
 
     internal companion object {
         const val STUFF_MAX_LENGTH: Int = 50
 
-        fun doPost(studentId: UUID, stuff: String, deadline: LocalDateTime): Mission = Mission(
+        fun doPost(studentId: UUID, stuff: String, deadline: LocalDateTime, price: Long): Mission = Mission(
             studentId = studentId,
             stuff = stuff,
             deadline = deadline,
             state = DeliveryState.POSTING,
+            price = price,
             deliverymanId = null
         )
     }
