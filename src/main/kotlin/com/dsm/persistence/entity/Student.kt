@@ -16,7 +16,7 @@ import java.util.UUID
 object StudentTable : UUIDTable("tbl_student") {
     val name: Column<String> = varchar("name", Student.NAME_MAX_LENGTH)
     val number: Column<Int> = integer("school_number")
-    val sex: Column<Sex> = enumerationByName("sex", Sex.VALUE_MAX_LENGTH, Sex::class)
+    val sex: Column<Sex> = enumerationByName("sex", Sex.VALUE_MAX_LENGTH)
     val password: Column<String> = char("password", Student.HASHED_PASSWORD_LENGTH)
 }
 

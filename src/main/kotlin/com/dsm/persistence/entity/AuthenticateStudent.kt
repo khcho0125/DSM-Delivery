@@ -14,7 +14,7 @@ import org.jetbrains.exposed.sql.Table
 object AuthenticateStudentTable : Table("tbl_authenticate_student") {
     val number: Column<Int> = integer("number")
     val name: Column<String> = varchar("name", Student.NAME_MAX_LENGTH)
-    val sex: Column<Sex> = enumerationByName("sex", Sex.VALUE_MAX_LENGTH, Sex::class)
+    val sex: Column<Sex> = enumerationByName("sex", Sex.VALUE_MAX_LENGTH)
     val isUsed: Column<Boolean> = bool("is_used")
 
     override val primaryKey: PrimaryKey = PrimaryKey(number)
