@@ -1,7 +1,6 @@
 package com.dsm.persistence.repository
 
 import com.dsm.persistence.entity.Student
-import org.jetbrains.exposed.sql.Op
 import java.util.UUID
 
 /**
@@ -18,11 +17,7 @@ interface StudentRepository {
 
     suspend fun findByName(name: String): Student?
 
-    suspend fun findBy(where: () -> Op<Boolean>): Student?
-
     suspend fun existsById(id: UUID): Boolean
-
-    suspend fun existsBy(where: () -> Op<Boolean>): Boolean
 
     suspend fun insert(student: Student): Student
 }
