@@ -1,7 +1,5 @@
 package com.dsm.exception
 
-import io.ktor.http.HttpStatusCode
-
 /**
  *
  * 에러를 구분하는 ErrorCode
@@ -14,7 +12,6 @@ interface ErrorCode {
     val defaultMessage: String
     val sequence: Int
     val header: String
-    val status: HttpStatusCode
 
     fun serial() : String = "$header-${formatCode.format(sequence)}"
 
