@@ -3,9 +3,8 @@ package com.dsm.persistence.factory
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.entity.StudentTable
 import com.dsm.persistence.repository.StudentRepository
-import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import java.util.UUID
 
@@ -41,23 +40,15 @@ class StudentQueryFactory : StudentRepository {
         .singleOrNull()
         ?.let(::toEntity)
 
-    override suspend fun findBy(where: () -> Op<Boolean>): Student? = StudentTable
-        .select(where())
-        .singleOrNull()
-        ?.let(::toEntity)
-
     override suspend fun existsById(id: UUID): Boolean = StudentTable
         .select { StudentTable.id eq id }
-        .empty()
+        .limit(1)
+        .empty().not()
 
-    override suspend fun existsBy(where: () -> Op<Boolean>): Boolean = StudentTable
-        .select(where())
-        .empty()
-
-    override suspend fun insert(student: Student): Student = StudentTable.insert {
+    override suspend fun insert(student: Student): UUID = StudentTable.insertAndGetId {
         it[name] = student.name
         it[number] = student.number
         it[password] = student.password
         it[sex] = student.sex
-    }.resultedValues!!.single().let(::toEntity)
+    }.value
 }
