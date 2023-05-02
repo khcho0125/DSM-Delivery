@@ -19,5 +19,5 @@ interface StudentRepository {
 
     suspend fun existsById(id: UUID): Boolean
 
-    suspend fun insert(student: Student): Student
+    suspend fun insert(student: Student): UUID
 }
