@@ -11,6 +11,10 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
 
 /**
  *
@@ -51,4 +55,13 @@ class StudentApi(
             )
         }
     }
-})
+}) {
+    companion object {
+        val module: Module = module {
+            singleOf(::StudentLogin)
+            singleOf(::RegisterStudent)
+            singleOf(::ReissueToken)
+            singleOf(::StudentApi) bind Api::class
+        }
+    }
+}
