@@ -1,14 +1,9 @@
 package com.dsm.plugins
 
-import com.dsm.api.Api
 import com.dsm.api.MissionApi
 import com.dsm.api.StudentApi
 import com.dsm.domain.auth.token.JwtGenerator
 import com.dsm.domain.auth.token.TokenProvider
-import com.dsm.domain.auth.usecase.RegisterStudent
-import com.dsm.domain.auth.usecase.ReissueToken
-import com.dsm.domain.auth.usecase.StudentLogin
-import com.dsm.domain.mission.usecase.PostMission
 import com.dsm.persistence.factory.AuthenticateStudentQueryFactory
 import com.dsm.persistence.factory.RefreshTokenQueryFactory
 import com.dsm.persistence.factory.StudentQueryFactory
@@ -31,37 +26,23 @@ import org.koin.dsl.module
  * @date 2023/03/20
  **/
 fun Application.injectModule() {
-    val auth: List<Module> = listOf(
-        module {
-            singleOf(::StudentLogin)
-            singleOf(::RegisterStudent)
-            singleOf(::ReissueToken)
-            singleOf(::StudentApi) bind Api::class
-        },
-        module {
-            singleOf(::JwtGenerator) bind TokenProvider::class
-        }
-    )
+    val securityModule: Module = module {
+        singleOf(::JwtGenerator) bind TokenProvider::class
+    }
 
-    val mission: List<Module> = listOf(
-        module {
-            singleOf(::PostMission)
-            singleOf(::MissionApi) bind Api::class
-        }
-    )
-
-    val factory: List<Module> = listOf(module {
+    val factoryModule: Module = module {
         singleOf(::StudentQueryFactory) bind StudentRepository::class
         singleOf(::AuthenticateStudentQueryFactory) bind AuthenticateStudentRepository::class
         singleOf(::RefreshTokenQueryFactory) bind RefreshTokenRepository::class
-    })
+    }
 
     stopKoin()
     startKoin {
         modules(
-            factory
-                    + auth
-                    + mission
+            securityModule,
+            factoryModule,
+            StudentApi.module,
+            MissionApi.module
         )
     }
 }

@@ -10,6 +10,10 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.patch
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
 import java.util.UUID
 
 /**
@@ -44,4 +48,11 @@ class MissionApi(
 
         }
     }
-})
+}) {
+    companion object {
+        val module: Module = module {
+            singleOf(::PostMission)
+            singleOf(::MissionApi) bind Api:: class
+        }
+    }
+}

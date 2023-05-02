@@ -14,7 +14,6 @@ import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.auth.principal
 import io.ktor.server.config.ApplicationConfig
-import io.ktor.server.response.respond
 import org.koin.ktor.ext.getKoin
 import java.util.UUID
 import kotlin.properties.Delegates
@@ -50,20 +49,15 @@ fun Application.configureSecurity() {
                         ?: return@dbQuery null
 
                     return@dbQuery if (studentRepository.existsById(studentId.let(UUID::fromString))) {
-                        null
-                    } else {
                         JWTPrincipal(credential.payload)
+                    } else {
+                        null
                     }
                 }
             }
 
             challenge { _, _ ->
-                RefreshTokenException.ValidToken().run {
-                    call.respond(
-                        message = toResponse(),
-                        status = code.status
-                    )
-                }
+                throw RefreshTokenException.ValidToken()
             }
         }
     }

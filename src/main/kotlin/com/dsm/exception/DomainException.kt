@@ -1,6 +1,5 @@
 package com.dsm.exception
 
-import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.Serializable
 
 /**
@@ -15,44 +14,54 @@ sealed class DomainException(
     open val code: ErrorCode
 ) : Throwable(message) {
 
-    fun toResponse(): ExceptionResponse = ExceptionResponse(
-        message = message ?: code.defaultMessage,
-        code = code.serial()
-    )
+    open class NotFound(
+        override val message: String? = null,
+        override val code: ErrorCode = DomainErrorCode.NOT_FOUND
+    ) : DomainException(message, code)
 
-    class NotFound(override val message: String? = null)
-        : DomainException(message, DomainErrorCode.NOT_FOUND)
+    open class Unauthorized(
+        override val message: String? = null,
+        override val code: ErrorCode = DomainErrorCode.UNAUTHORIZED
+    ) : DomainException(message, code)
 
-    class Unauthorized(override val message: String? = null)
-        : DomainException(message, DomainErrorCode.UNAUTHORIZED)
+    open class BadRequest(
+        override val message: String? = null,
+        override val code: ErrorCode = DomainErrorCode.BAD_REQUEST
+    ) : DomainException(message, code)
 
-    class BadRequest(override val message: String? = null)
-        : DomainException(message, DomainErrorCode.BAD_REQUEST)
+    open class Conflict(
+        override val message: String? = null,
+        override val code: ErrorCode = DomainErrorCode.CONFLICT
+    ) : DomainException(message, code)
 
-    class Conflict(override val message: String? = null)
-        : DomainException(message, DomainErrorCode.CONFLICT)
-
-    class InternalServerError(override val message: String? = null)
-        : DomainException(message, DomainErrorCode.INTERNAL_SERVER_ERROR)
+    open class InternalServerError(
+        override val message: String? = null,
+        override val code: ErrorCode = DomainErrorCode.INTERNAL_SERVER_ERROR
+    ) : DomainException(message, code)
 }
 
 @Serializable
 data class ExceptionResponse(
     val message: String,
     val code: String
-)
+) {
+
+    constructor(exception: DomainException) : this(
+        message = exception.message ?: exception.code.defaultMessage,
+        code = exception.code.serial()
+    )
+}
 
 enum class DomainErrorCode(
     override val sequence: Int,
-    override val defaultMessage: String,
-    override val status: HttpStatusCode
+    override val defaultMessage: String
 ) : ErrorCode {
 
-    NOT_FOUND(1, "Not Found", HttpStatusCode.NotFound),
-    UNAUTHORIZED(2, "Unauthorized", HttpStatusCode.Unauthorized),
-    BAD_REQUEST(3, "Bad Request", HttpStatusCode.BadRequest),
-    CONFLICT(4, "Conflict", HttpStatusCode.Conflict),
-    INTERNAL_SERVER_ERROR(5, "Internal Server Error", HttpStatusCode.InternalServerError)
+    NOT_FOUND(1, "Not Found"),
+    UNAUTHORIZED(2, "Unauthorized"),
+    BAD_REQUEST(3, "Bad Request"),
+    CONFLICT(4, "Conflict"),
+    INTERNAL_SERVER_ERROR(5, "Internal Server Error")
 
     ;
 
