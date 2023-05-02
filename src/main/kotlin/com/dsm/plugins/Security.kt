@@ -15,7 +15,6 @@ import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.auth.principal
 import io.ktor.server.config.ApplicationConfig
 import org.koin.ktor.ext.getKoin
-import java.util.UUID
 import kotlin.properties.Delegates
 
 /**
@@ -45,10 +44,10 @@ fun Application.configureSecurity() {
 
             validate { credential ->
                 dbQuery {
-                    val studentId: String = credential.payload.getClaim(JwtGenerator.JWT_STUDENT_ID).asString()
+                    val studentId: Int = credential.payload.getClaim(JwtGenerator.JWT_STUDENT_ID).asInt()
                         ?: return@dbQuery null
 
-                    return@dbQuery if (studentRepository.existsById(studentId.let(UUID::fromString))) {
+                    return@dbQuery if (studentRepository.existsById(studentId)) {
                         JWTPrincipal(credential.payload)
                     } else {
                         null
@@ -63,12 +62,11 @@ fun Application.configureSecurity() {
     }
 }
 
-fun ApplicationCall.currentUserId() : UUID {
+fun ApplicationCall.currentUserId() : Int {
     val principal: JWTPrincipal = principal<JWTPrincipal>()
         ?: throw DomainException.InternalServerError("JWT Principal Undefined")
 
-    return principal.payload.getClaim(JwtGenerator.JWT_STUDENT_ID).asString()
-        .let(UUID::fromString)
+    return principal.payload.getClaim(JwtGenerator.JWT_STUDENT_ID).asInt()
 }
 
 object SecurityProperties {

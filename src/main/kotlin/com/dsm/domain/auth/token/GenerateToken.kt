@@ -9,7 +9,6 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.util.Date
-import java.util.UUID
 
 /**
  *
@@ -30,7 +29,7 @@ class JwtGenerator(
     private val refreshTokenRepository: RefreshTokenRepository
 ) : TokenProvider {
 
-    private suspend fun generateRefreshToken(studentId: UUID): String {
+    private suspend fun generateRefreshToken(studentId: Int): String {
         val token: String = JWT.create()
             .withSubject(JWT_SUBJECT)
             .withJWTId(JWT_REFRESH)
@@ -48,18 +47,18 @@ class JwtGenerator(
         return token
     }
 
-    private fun generateAccessToken(studentId: UUID): String {
+    private fun generateAccessToken(studentId: Int): String {
         return JWT.create()
             .withSubject(JWT_SUBJECT)
             .withJWTId(JWT_ACCESS)
             .withAudience(SecurityProperties.audience)
             .withIssuer(SecurityProperties.issuer)
-            .withClaim(JWT_STUDENT_ID, studentId.toString())
+            .withClaim(JWT_STUDENT_ID, studentId)
             .withExpiresAt(Date(System.currentTimeMillis() + SecurityProperties.accessExpiredMillis))
             .sign(Algorithm.HMAC256(SecurityProperties.secret))
     }
 
-    override suspend fun generateToken(studentId: UUID): TokenResult {
+    override suspend fun generateToken(studentId: Int): TokenResult {
         val accessToken: String = generateAccessToken(studentId)
         val refreshToken: String = generateRefreshToken(studentId)
 

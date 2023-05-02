@@ -1,7 +1,7 @@
 package com.dsm.persistence.repository
 
+import com.dsm.persistence.entity.DeliveryState
 import com.dsm.persistence.entity.Mission
-import java.util.UUID
 
 /**
  *
@@ -12,10 +12,12 @@ import java.util.UUID
  **/
 interface MissionRepository {
 
-    suspend fun findById(id: UUID) : Mission?
+    suspend fun findById(id: Int) : Mission?
 
-    suspend fun existsByStudentId(studentId: UUID) : Boolean
+    suspend fun existsByStudentId(studentId: Int) : Boolean
 
     suspend fun insert(mission: Mission) : Mission
+
+    suspend fun findAllByStatus(status: DeliveryState): List<Mission>
 
 }

@@ -6,7 +6,6 @@ import com.dsm.persistence.repository.StudentRepository
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
-import java.util.UUID
 
 /**
  *
@@ -25,7 +24,7 @@ class StudentQueryFactory : StudentRepository {
         sex = row[StudentTable.sex]
     )
 
-    override suspend fun findById(id: UUID): Student? = StudentTable
+    override suspend fun findById(id: Int): Student? = StudentTable
         .select { StudentTable.id eq id }
         .singleOrNull()
         ?.let(::toEntity)
@@ -40,12 +39,12 @@ class StudentQueryFactory : StudentRepository {
         .singleOrNull()
         ?.let(::toEntity)
 
-    override suspend fun existsById(id: UUID): Boolean = StudentTable
+    override suspend fun existsById(id: Int): Boolean = StudentTable
         .select { StudentTable.id eq id }
         .limit(1)
         .empty().not()
 
-    override suspend fun insert(student: Student): UUID = StudentTable.insertAndGetId {
+    override suspend fun insert(student: Student): Int = StudentTable.insertAndGetId {
         it[name] = student.name
         it[number] = student.number
         it[password] = student.password

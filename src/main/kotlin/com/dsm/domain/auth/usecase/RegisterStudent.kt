@@ -9,7 +9,6 @@ import com.dsm.persistence.repository.AuthenticateStudentRepository
 import com.dsm.persistence.repository.StudentRepository
 import com.dsm.plugins.database.dbQuery
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 /**
  *
@@ -24,17 +23,17 @@ class RegisterStudent(
     private val tokenProvider: TokenProvider
 ) {
     suspend operator fun invoke(request: Request): TokenResult = dbQuery {
-        val studentId: UUID = registerStudentAccount(request)
+        val studentId: Int = registerStudentAccount(request)
         return@dbQuery tokenProvider.generateToken(studentId)
     }
 
-    private suspend fun registerStudentAccount(request: Request): UUID {
+    private suspend fun registerStudentAccount(request: Request): Int {
         val authenticate: AuthenticateStudent = authenticateStudentRepository.findByNumber(request.number)
             ?: throw AuthenticateStudentException.UnknownNumber()
 
         authenticate(request.name)
 
-        val studentId: UUID = studentRepository.insert(Student.register(
+        val studentId: Int = studentRepository.insert(Student.register(
             name = request.name,
             number = authenticate.number,
             sex = authenticate.sex,

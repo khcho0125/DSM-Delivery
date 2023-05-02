@@ -5,7 +5,6 @@ import com.dsm.persistence.entity.Mission
 import com.dsm.persistence.repository.MissionRepository
 import com.dsm.plugins.database.dbQuery
 import java.time.LocalDateTime
-import java.util.UUID
 
 /**
  *
@@ -18,13 +17,13 @@ class PostMission(
     private val missionRepository: MissionRepository
 ) {
 
-    suspend operator fun invoke(request: Request, studentId: UUID) : Unit = dbQuery {
+    suspend operator fun invoke(request: Request, studentId: Int) : Unit = dbQuery {
         if (missionRepository.existsByStudentId(studentId)) {
             throw MissionException.AlreadyPosted()
         }
 
         missionRepository.insert(Mission.doPost(
-            studentId = studentId,
+            orderId = studentId,
             stuff = request.stuff,
             deadline = request.deadline,
             price = request.price

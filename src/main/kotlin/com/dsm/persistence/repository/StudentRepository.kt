@@ -1,7 +1,6 @@
 package com.dsm.persistence.repository
 
 import com.dsm.persistence.entity.Student
-import java.util.UUID
 
 /**
  *
@@ -11,13 +10,13 @@ import java.util.UUID
  * @date 2023/03/22
  **/
 interface StudentRepository {
-    suspend fun findById(id: UUID): Student?
+    suspend fun findById(id: Int): Student?
 
     suspend fun findByNumber(number: Int): Student?
 
     suspend fun findByName(name: String): Student?
 
-    suspend fun existsById(id: UUID): Boolean
+    suspend fun existsById(id: Int): Boolean
 
-    suspend fun insert(student: Student): UUID
+    suspend fun insert(student: Student): Int
 }
