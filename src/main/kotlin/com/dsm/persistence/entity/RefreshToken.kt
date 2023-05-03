@@ -1,8 +1,6 @@
 package com.dsm.persistence.entity
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 /**
  *
@@ -15,8 +13,7 @@ import java.util.UUID
 data class RefreshToken(
     val token: String,
 
-    @Contextual
-    val studentId: UUID,
+    val studentId: Int,
 
     val expiredMillis: Long
 )

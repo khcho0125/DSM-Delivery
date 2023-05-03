@@ -3,8 +3,6 @@ package com.dsm.plugins
 import com.fasterxml.jackson.core.util.DefaultIndenter
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.deser.std.UUIDDeserializer
-import com.fasterxml.jackson.databind.ser.std.UUIDSerializer
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
@@ -21,7 +19,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.util.UUID
 
 
 /**
@@ -56,11 +53,6 @@ fun Application.configureNegotiating() {
                 addDeserializer(
                     LocalTime::class,
                     LocalTimeDeserializer(DateTimeFormatter.ISO_TIME)
-                )
-                addSerializer(UUIDSerializer())
-                addDeserializer(
-                    UUID::class,
-                    UUIDDeserializer()
                 )
             })
         }

@@ -2,9 +2,8 @@ package com.dsm.persistence.entity
 
 import com.dsm.exception.StudentException
 import com.dsm.plugins.PasswordFormatter
-import org.jetbrains.exposed.dao.id.UUIDTable
+import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
-import java.util.UUID
 
 /**
  *
@@ -13,7 +12,7 @@ import java.util.UUID
  * @author Chokyunghyeon
  * @date 2023/03/16
  **/
-object StudentTable : UUIDTable("tbl_student") {
+object StudentTable : IntIdTable("tbl_student") {
     val name: Column<String> = varchar("name", Student.NAME_MAX_LENGTH)
     val number: Column<Int> = integer("school_number")
     val sex: Column<Sex> = enumerationByName("sex", Sex.VALUE_MAX_LENGTH)
@@ -29,7 +28,7 @@ enum class Sex {
 }
 
 data class Student(
-    val id: UUID = UUID(0, 0),
+    val id: Int = 0,
     val name: String,
     val number: Int,
     val sex: Sex,
