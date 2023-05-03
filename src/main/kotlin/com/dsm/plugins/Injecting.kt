@@ -1,6 +1,6 @@
 package com.dsm.plugins
 
-import com.dsm.api.MissionApi
+import com.dsm.api.QuestApi
 import com.dsm.api.StudentApi
 import com.dsm.domain.auth.token.JwtGenerator
 import com.dsm.domain.auth.token.TokenProvider
@@ -42,7 +42,7 @@ fun Application.injectModule() {
             securityModule,
             factoryModule,
             StudentApi.module,
-            MissionApi.module
+            QuestApi.module
         )
     }
 }

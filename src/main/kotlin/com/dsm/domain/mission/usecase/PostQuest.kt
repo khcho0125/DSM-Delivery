@@ -1,8 +1,8 @@
 package com.dsm.domain.mission.usecase
 
-import com.dsm.exception.MissionException
-import com.dsm.persistence.entity.Mission
-import com.dsm.persistence.repository.MissionRepository
+import com.dsm.exception.QuestException
+import com.dsm.persistence.entity.Quest
+import com.dsm.persistence.repository.QuestRepository
 import com.dsm.plugins.database.dbQuery
 import java.time.LocalDateTime
 
@@ -13,16 +13,16 @@ import java.time.LocalDateTime
  * @author Chokyunghyeon
  * @date 2023/04/26
  **/
-class PostMission(
-    private val missionRepository: MissionRepository
+class PostQuest(
+    private val questRepository: QuestRepository
 ) {
 
     suspend operator fun invoke(request: Request, studentId: Int) : Unit = dbQuery {
-        if (missionRepository.existsByStudentId(studentId)) {
-            throw MissionException.AlreadyPosted()
+        if (questRepository.existsByOwnerId(studentId)) {
+            throw QuestException.AlreadyPosted()
         }
 
-        missionRepository.insert(Mission.doPost(
+        questRepository.insert(Quest.doPost(
             orderId = studentId,
             stuff = request.stuff,
             deadline = request.deadline,
