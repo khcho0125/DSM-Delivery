@@ -1,7 +1,7 @@
 package com.dsm.plugins.database
 
 import com.dsm.persistence.entity.AuthenticateStudentTable
-import com.dsm.persistence.entity.MissionTable
+import com.dsm.persistence.entity.QuestTable
 import com.dsm.persistence.entity.StudentTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -34,7 +34,7 @@ object ExposedDataBaseConnector {
 
             master = Database.connect(ExposedDataSource.Master(config)).also { database: Database ->
                 val tables: Array<Table> = arrayOf(
-                    MissionTable,
+                    QuestTable,
                     StudentTable,
                     AuthenticateStudentTable
                 )
