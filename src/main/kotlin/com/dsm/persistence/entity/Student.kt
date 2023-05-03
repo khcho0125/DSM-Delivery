@@ -2,8 +2,10 @@ package com.dsm.persistence.entity
 
 import com.dsm.exception.StudentException
 import com.dsm.plugins.PasswordFormatter
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.ResultRow
 
 /**
  *
@@ -17,6 +19,7 @@ object StudentTable : IntIdTable("tbl_student") {
     val number: Column<Int> = integer("school_number")
     val sex: Column<Sex> = enumerationByName("sex", Sex.VALUE_MAX_LENGTH)
     val password: Column<String> = char("password", Student.HASHED_PASSWORD_LENGTH)
+    val room: Column<EntityID<Int>> = reference("room_id", DormitoryRoomTable)
 }
 
 enum class Sex {
@@ -32,7 +35,8 @@ data class Student(
     val name: String,
     val number: Int,
     val sex: Sex,
-    val password: String
+    val password: String,
+    val room: Int
 ) {
 
     fun verifyPassword(password: String): Unit =
@@ -43,11 +47,27 @@ data class Student(
         }
 
     companion object {
-        fun register(name: String, number: Int, sex: Sex, password: String): Student = Student(
+        fun register(
+            name: String,
+            number: Int,
+            sex: Sex,
+            password: String,
+            room: Int
+        ): Student = Student(
             name = name,
             number = number,
             sex = sex,
-            password = PasswordFormatter.encodePassword(password)
+            password = PasswordFormatter.encodePassword(password),
+            room = room
+        )
+
+        fun of(row: ResultRow): Student = Student(
+            id = row[StudentTable.id].value,
+            name = row[StudentTable.name],
+            number = row[StudentTable.number],
+            password = row[StudentTable.password],
+            sex = row[StudentTable.sex],
+            room = row[StudentTable.room].value
         )
 
         internal const val NAME_MAX_LENGTH: Int = 20
