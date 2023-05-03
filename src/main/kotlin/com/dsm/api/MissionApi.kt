@@ -14,7 +14,6 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import java.util.UUID
 
 /**
  *
@@ -33,7 +32,7 @@ class MissionApi(
 
         post {
             val request: PostMission.Request = call.receive()
-            val studentId: UUID = call.currentUserId()
+            val studentId: Int = call.currentUserId()
 
             postMission(request, studentId)
 
