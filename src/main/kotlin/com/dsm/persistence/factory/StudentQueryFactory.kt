@@ -3,7 +3,6 @@ package com.dsm.persistence.factory
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.entity.StudentTable
 import com.dsm.persistence.repository.StudentRepository
-import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 
@@ -16,28 +15,20 @@ import org.jetbrains.exposed.sql.select
  **/
 class StudentQueryFactory : StudentRepository {
 
-    private fun toEntity(row: ResultRow): Student = Student(
-        id = row[StudentTable.id].value,
-        name = row[StudentTable.name],
-        number = row[StudentTable.number],
-        password = row[StudentTable.password],
-        sex = row[StudentTable.sex]
-    )
-
     override suspend fun findById(id: Int): Student? = StudentTable
         .select { StudentTable.id eq id }
         .singleOrNull()
-        ?.let(::toEntity)
+        ?.let(Student::of)
 
     override suspend fun findByNumber(number: Int): Student? = StudentTable
         .select { StudentTable.number eq number }
         .singleOrNull()
-        ?.let(::toEntity)
+        ?.let(Student::of)
 
     override suspend fun findByName(name: String): Student? = StudentTable
         .select { StudentTable.name eq name }
         .singleOrNull()
-        ?.let(::toEntity)
+        ?.let(Student::of)
 
     override suspend fun existsById(id: Int): Boolean = StudentTable
         .select { StudentTable.id eq id }

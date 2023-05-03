@@ -2,6 +2,7 @@ package com.dsm.persistence.entity
 
 import com.dsm.exception.AuthenticateStudentException
 import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 
 /**
@@ -34,5 +35,14 @@ data class AuthenticateStudent(
             isUsed -> throw AuthenticateStudentException.AlreadyUsed()
             this.name != name -> throw AuthenticateStudentException.UnknownName()
         }
+    }
+
+    companion object {
+        fun of(row: ResultRow): AuthenticateStudent = AuthenticateStudent(
+            number = row[AuthenticateStudentTable.number],
+            name = row[AuthenticateStudentTable.name],
+            isUsed = row[AuthenticateStudentTable.isUsed],
+            sex = row[AuthenticateStudentTable.sex]
+        )
     }
 }
