@@ -1,4 +1,4 @@
-package com.dsm.domain.mission.usecase
+package com.dsm.domain.quest.usecase
 
 import com.dsm.exception.QuestException
 import com.dsm.persistence.entity.Quest
@@ -8,12 +8,12 @@ import java.time.LocalDateTime
 
 /**
  *
- * 배달 미션 게시를 담당하는 PostMission
+ * 배달 퀘스트 게시를 담당하는 PublishQuest
  *
  * @author Chokyunghyeon
  * @date 2023/04/26
  **/
-class PostQuest(
+class PublishQuest(
     private val questRepository: QuestRepository
 ) {
 
@@ -22,7 +22,7 @@ class PostQuest(
             throw QuestException.AlreadyPosted()
         }
 
-        questRepository.insert(Quest.doPost(
+        questRepository.insert(Quest.publish(
             orderId = studentId,
             stuff = request.stuff,
             deadline = request.deadline,
