@@ -25,7 +25,7 @@ object QuestTable : IntIdTable("tbl_quest") {
 }
 
 enum class QuestState {
-    POSTING, DELIVERING, COMPLETED, MISSED;
+    PUBLISHING, DELIVERING, COMPLETED, MISSED;
 
     internal companion object {
         const val STATE_MAX_LENGTH: Int = 10
@@ -42,10 +42,21 @@ data class Quest(
     val state: QuestState
 ) {
 
+    fun accept(studentId: Int): Quest = this.copy(
+        acceptorId = studentId,
+        state = QuestState.DELIVERING,
+        deadline = LocalDateTime.now().plusMinutes(DELIVERY_TIME)
+    )
+
+    fun complete(): Quest = this.copy(
+        state = QuestState.COMPLETED
+    )
+
     internal companion object {
         const val STUFF_MAX_LENGTH: Int = 50
+        const val DELIVERY_TIME: Long = 10L
 
-        fun doPost(orderId: Int, stuff: String, deadline: LocalDateTime, price: Long): Quest {
+        fun publish(orderId: Int, stuff: String, deadline: LocalDateTime, price: Long): Quest {
             if (stuff.length > STUFF_MAX_LENGTH) {
                 throw QuestException
                     .OutOfLimitLength("Too much long stuff (${stuff.length}/$STUFF_MAX_LENGTH)")
@@ -55,7 +66,7 @@ data class Quest(
                 ownerId = orderId,
                 stuff = stuff,
                 deadline = deadline,
-                state = QuestState.POSTING,
+                state = QuestState.PUBLISHING,
                 price = price,
                 acceptorId = null
             )
