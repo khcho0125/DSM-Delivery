@@ -14,6 +14,15 @@ object QuestException {
 
     class OutOfLimitLength(override val message: String? = null)
         : DomainException.BadRequest(message, QuestErrorCode.OUT_OF_LIMIT_LENGTH)
+
+    class NotFound(override val message: String? = null)
+        : DomainException.NotFound(message, QuestErrorCode.NOT_FOUND)
+
+    class NotPublishing(override val message: String? = null)
+        : DomainException.Conflict(message, QuestErrorCode.NOT_PUBLISHING)
+
+    class UnableAccept(override val message: String? = null)
+        : DomainException.Conflict(message, QuestErrorCode.UNABLE_ACCEPT)
 }
 
 enum class QuestErrorCode(
@@ -21,8 +30,11 @@ enum class QuestErrorCode(
     override val defaultMessage: String
 ) : ErrorCode {
 
-    ALREADY_POSTED(1, "The other quest has been posted"),
-    OUT_OF_LIMIT_LENGTH(2, "The length is too much long")
+    NOT_FOUND(1, "Quest Not Found"),
+    ALREADY_POSTED(2, "The other quest has been posted"),
+    OUT_OF_LIMIT_LENGTH(3, "The length is too much long"),
+    NOT_PUBLISHING(4, "Not Publishing Quest"),
+    UNABLE_ACCEPT(5, "Can't Accepting Quest")
 
     ;
 
