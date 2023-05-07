@@ -1,7 +1,9 @@
 package com.dsm.api
 
-import com.dsm.domain.mission.usecase.GetQuest
-import com.dsm.domain.mission.usecase.PostQuest
+import com.dsm.domain.quest.usecase.AcceptQuest
+import com.dsm.domain.quest.usecase.GetQuest
+import com.dsm.domain.quest.usecase.PublishQuest
+import com.dsm.exception.DomainException
 import com.dsm.plugins.currentUserId
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -26,8 +28,9 @@ import org.koin.dsl.module
  * @date 2023/04/26
  **/
 class QuestApi(
-    postQuest: PostQuest,
-    getQuest: GetQuest
+    publishQuest: PublishQuest,
+    getQuest: GetQuest,
+    acceptQuest: AcceptQuest
 ) : Api({
     route("/mission") {
         get {
@@ -40,16 +43,24 @@ class QuestApi(
 
     authenticate("/quest") {
         post {
-            val request: PostQuest.Request = call.receive()
+            val request: PublishQuest.Request = call.receive()
             val studentId: Int = call.currentUserId()
 
-            postQuest(request, studentId)
+            publishQuest(request, studentId)
 
             call.response.status(HttpStatusCode.NoContent)
         }
 
         patch("/{quest-id}") {
+            val questId: Int = call.parameters["quest-id"]?.toInt()
+                ?: throw DomainException.BadRequest("Require Quest ID")
 
+            val studentId: Int = call.request.queryParameters["student-id"]?.toInt()
+                ?: throw DomainException.BadRequest("Require Student ID")
+
+            acceptQuest(questId, studentId)
+
+            call.response.status(HttpStatusCode.NoContent)
         }
 
         delete("/{quest-id}") {
@@ -59,7 +70,8 @@ class QuestApi(
 }) {
     companion object {
         val module: Module = module {
-            singleOf(::PostQuest)
+            singleOf(::AcceptQuest)
+            singleOf(::PublishQuest)
             singleOf(::GetQuest)
             singleOf(::QuestApi) bind Api:: class
         }
