@@ -13,12 +13,13 @@ import com.dsm.persistence.entity.QuestState
  **/
 interface QuestRepository {
 
-    suspend fun findById(id: Int) : Quest?
+    suspend fun findById(id: Int): Quest?
 
-    suspend fun existsByOwnerId(ownerId: Int) : Boolean
+    suspend fun existsByOwnerId(ownerId: Int): Boolean
 
-    suspend fun insert(quest: Quest) : Int
+    suspend fun insert(quest: Quest): Int
 
     suspend fun findAllByStatusWithOwner(state: QuestState): List<QuestOwner>
 
+    suspend fun update(quest: Quest): Int
 }

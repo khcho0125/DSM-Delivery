@@ -8,6 +8,7 @@ import com.dsm.persistence.entity.StudentTable
 import com.dsm.persistence.repository.QuestRepository
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 
 /**
  *
@@ -42,4 +43,14 @@ class QuestQueryFactory : QuestRepository {
         .leftJoin(StudentTable)
         .select { QuestTable.state eq state }
         .map(QuestOwner::of)
+
+    override suspend fun update(quest: Quest): Int = QuestTable
+        .update({  QuestTable.id eq quest.id }) {
+            it[owner] = quest.ownerId
+            it[price] = quest.price
+            it[state] = quest.state
+            it[deadline] = quest.deadline
+            it[stuff] = quest.stuff
+            it[acceptor] = quest.acceptorId
+        }
 }
