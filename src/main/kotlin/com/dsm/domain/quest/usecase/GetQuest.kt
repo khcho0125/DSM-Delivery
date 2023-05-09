@@ -1,4 +1,4 @@
-package com.dsm.domain.mission.usecase
+package com.dsm.domain.quest.usecase
 
 import com.dsm.persistence.entity.QuestOwner
 import com.dsm.persistence.entity.QuestState
@@ -20,7 +20,7 @@ class GetQuest(
 ) {
 
     suspend operator fun invoke(): Response = dbQuery {
-        val questOwner: List<QuestOwner> = questRepository.findAllByStatusWithOwner(QuestState.POSTING)
+        val questOwner: List<QuestOwner> = questRepository.findAllByStatusWithOwner(QuestState.PUBLISHING)
 
         return@dbQuery questOwner.map {
             QuestView(
