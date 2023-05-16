@@ -19,8 +19,8 @@ class GetQuest(
     private val questRepository: QuestRepository
 ) {
 
-    suspend operator fun invoke(): Response = dbQuery {
-        val questOwner: List<QuestOwner> = questRepository.findAllByStatusWithOwner(QuestState.PUBLISHING)
+    suspend operator fun invoke(state: QuestState): Response = dbQuery {
+        val questOwner: List<QuestOwner> = questRepository.findAllByStateWithOwner(state)
 
         return@dbQuery questOwner.map {
             QuestView(
@@ -38,7 +38,7 @@ class GetQuest(
 
     @Serializable
     data class Response(
-        val missions: List<QuestView>
+        val quests: List<QuestView>
     )
 
     @Serializable
