@@ -1,7 +1,7 @@
-package com.dsm.domain.auth.usecase
+package com.dsm.domain.student.usecase
 
-import com.dsm.domain.auth.token.TokenProvider
-import com.dsm.domain.auth.token.TokenResult
+import com.dsm.domain.student.token.TokenProvider
+import com.dsm.domain.student.token.TokenResult
 import com.dsm.exception.StudentException
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.StudentRepository

@@ -2,8 +2,8 @@ package com.dsm.plugins
 
 import com.dsm.api.QuestApi
 import com.dsm.api.StudentApi
-import com.dsm.domain.auth.token.JwtGenerator
-import com.dsm.domain.auth.token.TokenProvider
+import com.dsm.domain.student.token.JwtGenerator
+import com.dsm.domain.student.token.TokenProvider
 import com.dsm.persistence.factory.AuthenticateStudentQueryFactory
 import com.dsm.persistence.factory.RefreshTokenQueryFactory
 import com.dsm.persistence.factory.StudentQueryFactory

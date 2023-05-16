@@ -2,7 +2,7 @@ package com.dsm.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.dsm.domain.auth.token.JwtGenerator
+import com.dsm.domain.student.token.JwtGenerator
 import com.dsm.exception.DomainException
 import com.dsm.exception.RefreshTokenException
 import com.dsm.persistence.repository.StudentRepository

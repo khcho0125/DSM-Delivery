@@ -1,8 +1,8 @@
 package com.dsm.api
 
-import com.dsm.domain.auth.usecase.RegisterStudent
-import com.dsm.domain.auth.usecase.ReissueToken
-import com.dsm.domain.auth.usecase.StudentLogin
+import com.dsm.domain.student.usecase.RegisterStudent
+import com.dsm.domain.student.usecase.ReissueToken
+import com.dsm.domain.student.usecase.StudentLogin
 import com.dsm.exception.DomainException
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call

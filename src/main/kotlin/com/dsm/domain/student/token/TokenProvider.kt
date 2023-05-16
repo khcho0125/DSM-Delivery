@@ -1,4 +1,4 @@
-package com.dsm.domain.auth.token
+package com.dsm.domain.student.token
 
 /**
  *
