@@ -1,9 +1,13 @@
 package com.dsm.api
 
 import com.dsm.domain.quest.usecase.AcceptQuest
+import com.dsm.domain.quest.usecase.CancelQuest
+import com.dsm.domain.quest.usecase.CompleteQuest
+import com.dsm.domain.quest.usecase.FailQuest
 import com.dsm.domain.quest.usecase.GetQuest
 import com.dsm.domain.quest.usecase.PublishQuest
 import com.dsm.exception.DomainException
+import com.dsm.persistence.entity.QuestState
 import com.dsm.plugins.currentUserId
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -30,12 +34,18 @@ import org.koin.dsl.module
 class QuestApi(
     publishQuest: PublishQuest,
     getQuest: GetQuest,
-    acceptQuest: AcceptQuest
+    acceptQuest: AcceptQuest,
+    cancelQuest: CancelQuest,
+    completeQuest: CompleteQuest,
+    failQuest: FailQuest
 ) : Api({
-    route("/mission") {
+    route("/quest") {
         get {
+            val state: QuestState = call.request.queryParameters["state"]?.let(QuestState::valueOf)
+                ?: throw DomainException.BadRequest("Select the state you want to search for")
+
             call.respond(
-                message = getQuest(),
+                message = getQuest(state),
                 status = HttpStatusCode.OK
             )
         }
@@ -64,7 +74,45 @@ class QuestApi(
         }
 
         delete("/{quest-id}") {
+            val questId: Int = call.parameters["quest-id"]?.toInt()
+                ?: throw DomainException.BadRequest("Require Quest ID")
 
+            val studentId: Int = call.currentUserId()
+
+            cancelQuest(
+                questId = questId,
+                studentId = studentId
+            )
+
+            call.response.status(HttpStatusCode.NoContent)
+        }
+
+        patch("/{quest-id}/complete") {
+            val questId: Int = call.parameters["quest-id"]?.toInt()
+                ?: throw DomainException.BadRequest("Require Quest ID")
+
+            val studentId: Int = call.currentUserId()
+
+            completeQuest(
+                questId = questId,
+                studentId = studentId
+            )
+
+            call.response.status(HttpStatusCode.OK)
+        }
+
+        patch("/{quest-id}/failure") {
+            val questId: Int = call.parameters["quest-id"]?.toInt()
+                ?: throw DomainException.BadRequest("Require Quest ID")
+
+            val studentId: Int = call.currentUserId()
+
+            failQuest(
+                questId = questId,
+                studentId = studentId
+            )
+
+            call.response.status(HttpStatusCode.OK)
         }
     }
 }) {
@@ -73,7 +121,10 @@ class QuestApi(
             singleOf(::AcceptQuest)
             singleOf(::PublishQuest)
             singleOf(::GetQuest)
-            singleOf(::QuestApi) bind Api:: class
+            singleOf(::CancelQuest)
+            singleOf(::CompleteQuest)
+            singleOf(::FailQuest)
+            singleOf(::QuestApi) bind Api::class
         }
     }
 }
