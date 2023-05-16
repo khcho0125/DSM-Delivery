@@ -7,12 +7,12 @@ import com.dsm.plugins.database.dbQuery
 
 /**
  *
- * 배달 퀘스트를 취소하는 CancelQuest
+ * 배송 타임아웃시 퀘스트 실패 처리를 담당하는 FailQuest
  *
  * @author Chokyunghyeon
- * @date 2023/05/15
+ * @date 2023/05/16
  **/
-class CancelQuest(
+class FailQuest(
     private val questRepository: QuestRepository
 ) {
 
@@ -20,12 +20,12 @@ class CancelQuest(
         val quest: Quest = questRepository.findById(questId)
             ?: throw QuestException.NotFound()
 
-        if(quest.ownerId != studentId) {
+        if (quest.ownerId != studentId) {
             throw QuestException.UnableAccept()
         }
 
         questRepository.update(
-            quest.cancel()
+            quest.failure()
         )
     }
 }

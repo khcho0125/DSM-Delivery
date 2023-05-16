@@ -4,7 +4,6 @@ import com.dsm.exception.QuestException
 import com.dsm.exception.StudentException
 import com.dsm.persistence.entity.Quest
 import com.dsm.persistence.entity.QuestOwner
-import com.dsm.persistence.entity.QuestState
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.QuestRepository
 import com.dsm.persistence.repository.StudentRepository
@@ -35,9 +34,6 @@ class AcceptQuest(
 
             questOwner.owner.id == student.id ->
                 throw QuestException.UnableAccept("Quest Owner and Student are the same")
-
-            questOwner.state != QuestState.PUBLISHING ->
-                throw QuestException.DifferentState(QuestState.DELIVERING)
         }
 
         val quest: Quest = questOwner
