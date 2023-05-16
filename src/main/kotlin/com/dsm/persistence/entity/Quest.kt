@@ -25,7 +25,7 @@ object QuestTable : IntIdTable("tbl_quest") {
 }
 
 enum class QuestState {
-    PUBLISHING, DELIVERING, COMPLETED, MISSED;
+    PUBLISHING, DELIVERING, COMPLETED, CANCELED, MISSING;
 
     internal companion object {
         const val STATE_MAX_LENGTH: Int = 10
@@ -42,15 +42,51 @@ data class Quest(
     val state: QuestState
 ) {
 
-    fun accept(studentId: Int): Quest = this.copy(
-        acceptorId = studentId,
-        state = QuestState.DELIVERING,
-        deadline = LocalDateTime.now().plusMinutes(DELIVERY_TIME)
-    )
+    fun accept(studentId: Int): Quest {
+        if(this.state != QuestState.PUBLISHING) {
+            throw QuestException.DifferentState(QuestState.PUBLISHING)
+        }
 
-    fun complete(): Quest = this.copy(
-        state = QuestState.COMPLETED
-    )
+        return this.copy(
+            acceptorId = studentId,
+            state = QuestState.DELIVERING,
+            deadline = LocalDateTime.now().plusMinutes(DELIVERY_TIME)
+        )
+    }
+
+    fun complete(): Quest {
+        if(this.state !in arrayOf(QuestState.MISSING, QuestState.DELIVERING)) {
+            throw QuestException.DifferentState()
+        }
+
+        return this.copy(
+            state = QuestState.COMPLETED
+        )
+    }
+
+    fun cancel(): Quest {
+        if(this.state != QuestState.PUBLISHING) {
+            throw QuestException.DifferentState(QuestState.PUBLISHING)
+        }
+
+        return this.copy(
+            state = QuestState.CANCELED
+        )
+    }
+
+    fun failure(): Quest {
+        if(this.state != QuestState.DELIVERING) {
+            throw QuestException.DifferentState(QuestState.DELIVERING)
+        }
+
+        if(this.deadline.isBefore(LocalDateTime.now())) {
+            throw QuestException.NotTimeout()
+        }
+
+        return this.copy(
+            state = QuestState.MISSING
+        )
+    }
 
     internal companion object {
         const val STUFF_MAX_LENGTH: Int = 50
@@ -97,7 +133,18 @@ data class QuestOwner(
     data class Owner(
         val id: Int,
         val name: String,
+        val sex: Sex,
         val room: Int
+    )
+
+    fun toQuest() : Quest = Quest(
+        id = id,
+        ownerId = owner.id,
+        acceptorId = acceptorId,
+        stuff = stuff,
+        deadline = deadline,
+        price = price,
+        state = state
     )
 
     companion object {
@@ -106,7 +153,8 @@ data class QuestOwner(
             owner = Owner(
                 id = row[StudentTable.id].value,
                 name = row[StudentTable.name],
-                room = row[StudentTable.room].value
+                room = row[StudentTable.room].value,
+                sex = row[StudentTable.sex]
             ),
             stuff = row[QuestTable.stuff],
             acceptorId = row[QuestTable.acceptor]?.value,
