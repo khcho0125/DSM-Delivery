@@ -39,7 +39,7 @@ class QuestQueryFactory : QuestRepository {
             it[acceptor] = quest.acceptorId
         }.value
 
-    override suspend fun findAllByStatusWithOwner(state: QuestState): List<QuestOwner> = QuestTable
+    override suspend fun findAllByStateWithOwner(state: QuestState): List<QuestOwner> = QuestTable
         .leftJoin(StudentTable)
         .select { QuestTable.state eq state }
         .map(QuestOwner::of)
@@ -53,4 +53,10 @@ class QuestQueryFactory : QuestRepository {
             it[stuff] = quest.stuff
             it[acceptor] = quest.acceptorId
         }
+
+    override suspend fun findByIdWithOwner(id: Int): QuestOwner? = QuestTable
+        .leftJoin(StudentTable)
+        .select { QuestTable.id eq id }
+        .singleOrNull()
+        ?.let(QuestOwner::of)
 }

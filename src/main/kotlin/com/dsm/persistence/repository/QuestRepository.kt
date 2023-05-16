@@ -19,7 +19,9 @@ interface QuestRepository {
 
     suspend fun insert(quest: Quest): Int
 
-    suspend fun findAllByStatusWithOwner(state: QuestState): List<QuestOwner>
+    suspend fun findAllByStateWithOwner(state: QuestState): List<QuestOwner>
 
     suspend fun update(quest: Quest): Int
+
+    suspend fun findByIdWithOwner(id: Int): QuestOwner?
 }
