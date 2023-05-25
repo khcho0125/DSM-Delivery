@@ -3,6 +3,7 @@ package com.dsm.persistence.repository
 import com.dsm.persistence.entity.Quest
 import com.dsm.persistence.entity.QuestOwner
 import com.dsm.persistence.entity.QuestState
+import java.time.LocalDateTime
 
 /**
  *
@@ -20,6 +21,8 @@ interface QuestRepository {
     suspend fun insert(quest: Quest): Int
 
     suspend fun findAllByStateWithOwner(state: QuestState): List<QuestOwner>
+
+    suspend fun findAllByStateWithOwnerAfterDeadline(state: QuestState, deadline: LocalDateTime): List<QuestOwner>
 
     suspend fun update(quest: Quest): Int
 

@@ -6,9 +6,11 @@ import com.dsm.persistence.entity.QuestState
 import com.dsm.persistence.entity.QuestTable
 import com.dsm.persistence.entity.StudentTable
 import com.dsm.persistence.repository.QuestRepository
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
+import java.time.LocalDateTime
 
 /**
  *
@@ -44,8 +46,19 @@ class QuestQueryFactory : QuestRepository {
         .select { QuestTable.state eq state }
         .map(QuestOwner::of)
 
+    override suspend fun findAllByStateWithOwnerAfterDeadline(
+        state: QuestState,
+        deadline: LocalDateTime,
+    ): List<QuestOwner> = QuestTable
+        .leftJoin(StudentTable)
+        .select {
+            QuestTable.state eq state and
+                    (QuestTable.deadline greater deadline)
+        }
+        .map(QuestOwner::of)
+
     override suspend fun update(quest: Quest): Int = QuestTable
-        .update({  QuestTable.id eq quest.id }) {
+        .update({ QuestTable.id eq quest.id }) {
             it[owner] = quest.ownerId
             it[price] = quest.price
             it[state] = quest.state
