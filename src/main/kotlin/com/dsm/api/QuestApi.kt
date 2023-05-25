@@ -4,7 +4,7 @@ import com.dsm.domain.quest.usecase.AcceptQuest
 import com.dsm.domain.quest.usecase.CancelQuest
 import com.dsm.domain.quest.usecase.CompleteQuest
 import com.dsm.domain.quest.usecase.FailQuest
-import com.dsm.domain.quest.usecase.GetQuest
+import com.dsm.domain.quest.usecase.GetPublishingQuest
 import com.dsm.domain.quest.usecase.PublishQuest
 import com.dsm.exception.DomainException
 import com.dsm.persistence.entity.QuestState
@@ -33,7 +33,7 @@ import org.koin.dsl.module
  **/
 class QuestApi(
     publishQuest: PublishQuest,
-    getQuest: GetQuest,
+    getPublishingQuest: GetPublishingQuest,
     acceptQuest: AcceptQuest,
     cancelQuest: CancelQuest,
     completeQuest: CompleteQuest,
@@ -45,7 +45,7 @@ class QuestApi(
                 ?: throw DomainException.BadRequest("Select the state you want to search for")
 
             call.respond(
-                message = getQuest(state),
+                message = getPublishingQuest(state),
                 status = HttpStatusCode.OK
             )
         }
@@ -120,7 +120,7 @@ class QuestApi(
         val module: Module = module {
             singleOf(::AcceptQuest)
             singleOf(::PublishQuest)
-            singleOf(::GetQuest)
+            singleOf(::GetPublishingQuest)
             singleOf(::CancelQuest)
             singleOf(::CompleteQuest)
             singleOf(::FailQuest)

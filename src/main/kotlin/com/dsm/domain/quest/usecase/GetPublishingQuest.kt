@@ -10,17 +10,18 @@ import java.time.LocalDateTime
 
 /**
  *
- * 퀘스트 불러오기를 담당하는 GetQuest
+ * 게시 상태인 퀘스트 불러오기를 담당하는 GetPublishingQuest
  *
  * @author Chokyunghyeon
  * @date 2023/05/03
  **/
-class GetQuest(
+class GetPublishingQuest(
     private val questRepository: QuestRepository
 ) {
 
-    suspend operator fun invoke(state: QuestState): Response = dbQuery {
-        val questOwner: List<QuestOwner> = questRepository.findAllByStateWithOwner(state)
+    suspend operator fun invoke(): Response = dbQuery {
+        val questOwner: List<QuestOwner> = questRepository
+            .findAllByStateWithOwnerAfterDeadline(QuestState.PUBLISHING, LocalDateTime.now())
 
         return@dbQuery questOwner.map {
             QuestView(
@@ -29,6 +30,7 @@ class GetQuest(
                 price = it.price,
                 deadline = it.deadline,
                 owner = QuestView.Owner(
+                    id = it.owner.id,
                     name = it.owner.name,
                     room = it.owner.room
                 )
@@ -52,6 +54,7 @@ class GetQuest(
     ) {
         @Serializable
         data class Owner(
+            val id: Int,
             val name: String,
             val room: Int
         )
