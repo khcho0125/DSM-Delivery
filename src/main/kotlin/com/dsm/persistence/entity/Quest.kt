@@ -25,7 +25,7 @@ object QuestTable : IntIdTable("tbl_quest") {
 }
 
 enum class QuestState {
-    PUBLISHING, DELIVERING, COMPLETED, CANCELED, MISSING;
+    PUBLISHING, PROCESSING, COMPLETED, CANCELED, MISSING;
 
     internal companion object {
         const val STATE_MAX_LENGTH: Int = 10
@@ -49,13 +49,13 @@ data class Quest(
 
         return this.copy(
             acceptorId = studentId,
-            state = QuestState.DELIVERING,
+            state = QuestState.PROCESSING,
             deadline = LocalDateTime.now().plusMinutes(DELIVERY_TIME)
         )
     }
 
     fun complete(): Quest {
-        if(this.state !in arrayOf(QuestState.MISSING, QuestState.DELIVERING)) {
+        if(this.state !in arrayOf(QuestState.MISSING, QuestState.PROCESSING)) {
             throw QuestException.DifferentState()
         }
 
@@ -75,8 +75,8 @@ data class Quest(
     }
 
     fun failure(): Quest {
-        if(this.state != QuestState.DELIVERING) {
-            throw QuestException.DifferentState(QuestState.DELIVERING)
+        if(this.state != QuestState.PROCESSING) {
+            throw QuestException.DifferentState(QuestState.PROCESSING)
         }
 
         if(this.deadline.isBefore(LocalDateTime.now())) {
