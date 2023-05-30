@@ -1,6 +1,7 @@
 package com.dsm.plugins.database
 
 import com.dsm.persistence.entity.AuthenticateStudentTable
+import com.dsm.persistence.entity.DormitoryRoomTable
 import com.dsm.persistence.entity.QuestTable
 import com.dsm.persistence.entity.StudentTable
 import com.zaxxer.hikari.HikariConfig
@@ -36,7 +37,8 @@ object ExposedDataBaseConnector {
                 val tables: Array<Table> = arrayOf(
                     QuestTable,
                     StudentTable,
-                    AuthenticateStudentTable
+                    AuthenticateStudentTable,
+                    DormitoryRoomTable
                 )
 
                 transaction(database) {
