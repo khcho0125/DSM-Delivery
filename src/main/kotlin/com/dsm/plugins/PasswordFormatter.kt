@@ -11,7 +11,7 @@ import org.mindrot.jbcrypt.BCrypt
  **/
 object PasswordFormatter {
 
-    fun checkPassword(attempt: String, password: String): Boolean = BCrypt.checkpw(attempt, password)
+    fun correctPassword(attempt: String, password: String): Boolean = BCrypt.checkpw(attempt, password)
 
     fun encodePassword(password: String): String = BCrypt.hashpw(password, BCrypt.gensalt())
 }

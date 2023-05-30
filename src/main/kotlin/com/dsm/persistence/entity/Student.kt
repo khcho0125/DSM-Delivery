@@ -1,11 +1,11 @@
 package com.dsm.persistence.entity
 
+import com.dsm.exception.DomainException
 import com.dsm.exception.StudentException
 import com.dsm.plugins.PasswordFormatter
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.ResultRow
 
 /**
  *
@@ -18,8 +18,8 @@ object StudentTable : IntIdTable("tbl_student") {
     val name: Column<String> = varchar("name", Student.NAME_MAX_LENGTH)
     val number: Column<Int> = integer("school_number")
     val sex: Column<Sex> = enumerationByName("sex", Sex.VALUE_MAX_LENGTH)
-    val password: Column<String> = char("password", Student.HASHED_PASSWORD_LENGTH)
-    val room: Column<EntityID<Int>> = reference("room_id", DormitoryRoomTable)
+    val password: Column<String> = char("password", Password.HASHED_LENGTH)
+    val room: Column<EntityID<Int>> = reference("room_id", DormitoryRoomTable.id)
 }
 
 enum class Sex {
@@ -27,6 +27,32 @@ enum class Sex {
 
     internal companion object {
         const val VALUE_MAX_LENGTH = 6
+    }
+}
+
+@JvmInline
+value class Password(private val value: String) {
+    init {
+        if(value.matches(ALLOWED_PATTERN)) {
+            throw DomainException.BadRequest("Invalid Password Configuration")
+        }
+    }
+
+    fun encode(): String = PasswordFormatter.encodePassword(value)
+
+    companion object {
+        fun verify(password: String, encodePassword: String) {
+            if (PasswordFormatter.correctPassword(password, encodePassword).not()) {
+                throw StudentException.IncorrectPassword()
+            }
+        }
+
+        private const val MIN_LENGTH: Int = 8
+        private const val MAX_LENGTH: Int = 20
+
+        private val ALLOWED_PATTERN = Regex("""(?=.*[a-zA-Z])(?=.*\d)(?=^[\w$+-]{$MIN_LENGTH,$MAX_LENGTH}$).*""")
+
+        internal const val HASHED_LENGTH: Int = 60
     }
 }
 
@@ -39,38 +65,19 @@ data class Student(
     val room: Int
 ) {
 
-    fun verifyPassword(password: String): Unit =
-        if (PasswordFormatter.checkPassword(password, this.password)) {
-            Unit
-        } else {
-            throw StudentException.IncorrectPassword()
-        }
-
     companion object {
         fun register(
-            name: String,
-            number: Int,
-            sex: Sex,
-            password: String,
+            authenticate: AuthenticateStudent,
+            password: Password,
             room: Int
-        ): Student = Student(
-            name = name,
-            number = number,
-            sex = sex,
-            password = PasswordFormatter.encodePassword(password),
+        ) = Student(
+            name = authenticate.name,
+            number = authenticate.number,
+            sex = authenticate.sex,
+            password = password.encode(),
             room = room
         )
 
-        fun of(row: ResultRow): Student = Student(
-            id = row[StudentTable.id].value,
-            name = row[StudentTable.name],
-            number = row[StudentTable.number],
-            password = row[StudentTable.password],
-            sex = row[StudentTable.sex],
-            room = row[StudentTable.room].value
-        )
-
         internal const val NAME_MAX_LENGTH: Int = 20
-        internal const val HASHED_PASSWORD_LENGTH: Int = 60
     }
 }
