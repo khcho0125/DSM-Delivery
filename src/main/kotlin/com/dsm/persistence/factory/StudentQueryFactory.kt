@@ -2,6 +2,7 @@ package com.dsm.persistence.factory
 
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.entity.StudentTable
+import com.dsm.persistence.mapper.StudentMapper
 import com.dsm.persistence.repository.StudentRepository
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
@@ -18,17 +19,17 @@ class StudentQueryFactory : StudentRepository {
     override suspend fun findById(id: Int): Student? = StudentTable
         .select { StudentTable.id eq id }
         .singleOrNull()
-        ?.let(Student::of)
+        ?.let(StudentMapper::of)
 
     override suspend fun findByNumber(number: Int): Student? = StudentTable
         .select { StudentTable.number eq number }
         .singleOrNull()
-        ?.let(Student::of)
+        ?.let(StudentMapper::of)
 
     override suspend fun findByName(name: String): Student? = StudentTable
         .select { StudentTable.name eq name }
         .singleOrNull()
-        ?.let(Student::of)
+        ?.let(StudentMapper::of)
 
     override suspend fun existsById(id: Int): Boolean = StudentTable
         .select { StudentTable.id eq id }
@@ -40,5 +41,6 @@ class StudentQueryFactory : StudentRepository {
         it[number] = student.number
         it[password] = student.password
         it[sex] = student.sex
+        it[room] = student.room
     }.value
 }
