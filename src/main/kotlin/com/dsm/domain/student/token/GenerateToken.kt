@@ -12,7 +12,7 @@ import java.util.Date
 
 /**
  *
- * Jwt 토큰을 생성하는 GenerateToken
+ * 보안 토큰을 생성하는 GenerateToken
  *
  * @author Chokyunghyeon
  * @date 2023/03/20
