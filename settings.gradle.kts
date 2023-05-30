@@ -1,1 +1,1 @@
-rootProject.name = "DSM-Delivery"
+rootProject.name = "DSM-Quest"
