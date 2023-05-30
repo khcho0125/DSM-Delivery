@@ -3,6 +3,7 @@ package com.dsm.domain.student.usecase
 import com.dsm.domain.student.token.TokenProvider
 import com.dsm.domain.student.token.TokenResult
 import com.dsm.exception.StudentException
+import com.dsm.persistence.entity.Password
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.StudentRepository
 import com.dsm.plugins.database.dbQuery
@@ -20,18 +21,26 @@ class StudentLogin(
     private val studentRepository: StudentRepository
 ) {
 
-    suspend operator fun invoke(request: Request): TokenResult = dbQuery {
+    suspend operator fun invoke(request: Request): Response = dbQuery {
         val student: Student = studentRepository.findByNumber(request.number)
             ?: throw StudentException.NotFound()
 
-        student.verifyPassword(request.password)
+        Password.verify(request.password, student.password)
 
-        return@dbQuery tokenProvider.generateToken(student.id)
+        return@dbQuery Response(
+            id = student.id,
+            token = tokenProvider.generateToken(student.id)
+        )
     }
 
-    @Serializable
     data class Request(
         val number: Int,
         val password: String
+    )
+
+    @Serializable
+    data class Response(
+        val id: Int,
+        val token: TokenResult
     )
 }

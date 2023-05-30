@@ -7,7 +7,7 @@ import com.dsm.plugins.database.dbQuery
 
 /**
  *
- * 배달 퀘스트를 취소하는 CancelQuest
+ * 게시 중인 퀘스트를 취소하는 CancelQuest
  *
  * @author Chokyunghyeon
  * @date 2023/05/15
@@ -20,12 +20,8 @@ class CancelQuest(
         val quest: Quest = questRepository.findById(questId)
             ?: throw QuestException.NotFound()
 
-        if(quest.ownerId != studentId) {
-            throw QuestException.UnableAccept()
-        }
-
         questRepository.update(
-            quest.cancel()
+            quest.cancel(studentId)
         )
     }
 }

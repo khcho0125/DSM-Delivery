@@ -3,7 +3,7 @@ package com.dsm.domain.quest.usecase
 import com.dsm.exception.QuestException
 import com.dsm.exception.StudentException
 import com.dsm.persistence.entity.Quest
-import com.dsm.persistence.entity.QuestOwner
+import com.dsm.persistence.entity.QuestStudent
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.QuestRepository
 import com.dsm.persistence.repository.StudentRepository
@@ -22,21 +22,21 @@ class AcceptQuest(
 ) {
 
     suspend operator fun invoke(questId: Int, studentId: Int): Unit = dbQuery {
-        val questOwner: QuestOwner = questRepository.findByIdWithOwner(questId)
+        val questStudent: QuestStudent = questRepository.findByIdWithStudent(questId)
             ?: throw QuestException.NotFound()
 
         val student: Student = studentRepository.findById(studentId)
             ?: throw StudentException.NotFound()
 
         when {
-            questOwner.owner.sex != student.sex ->
+            questStudent.owner.sex != student.sex ->
                 throw QuestException.UnableAccept("Quest Owner and Student have different sex")
 
-            questOwner.owner.id == student.id ->
+            questStudent.owner.id == student.id ->
                 throw QuestException.UnableAccept("Quest Owner and Student are the same")
         }
 
-        val quest: Quest = questOwner
+        val quest: Quest = questStudent
             .toQuest()
             .accept(studentId)
 

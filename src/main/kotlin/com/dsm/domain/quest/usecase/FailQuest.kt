@@ -7,7 +7,7 @@ import com.dsm.plugins.database.dbQuery
 
 /**
  *
- * 배송 타임아웃시 퀘스트 실패 처리를 담당하는 FailQuest
+ * 퀘스트 타임아웃시 퀘스트 실패 처리를 담당하는 FailQuest
  *
  * @author Chokyunghyeon
  * @date 2023/05/16
@@ -20,12 +20,8 @@ class FailQuest(
         val quest: Quest = questRepository.findById(questId)
             ?: throw QuestException.NotFound()
 
-        if (quest.ownerId != studentId) {
-            throw QuestException.UnableAccept()
-        }
-
         questRepository.update(
-            quest.failure()
+            quest.failure(studentId)
         )
     }
 }

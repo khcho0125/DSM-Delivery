@@ -5,6 +5,7 @@ import com.dsm.domain.student.token.TokenResult
 import com.dsm.exception.AuthenticateStudentException
 import com.dsm.exception.DormitoryRoomException
 import com.dsm.persistence.entity.AuthenticateStudent
+import com.dsm.persistence.entity.Password
 import com.dsm.persistence.entity.Student
 import com.dsm.persistence.repository.AuthenticateStudentRepository
 import com.dsm.persistence.repository.DormitoryRoomRepository
@@ -25,9 +26,12 @@ class RegisterStudent(
     private val tokenProvider: TokenProvider,
     private val dormitoryRoomRepository: DormitoryRoomRepository
 ) {
-    suspend operator fun invoke(request: Request): TokenResult = dbQuery {
+    suspend operator fun invoke(request: Request): Response = dbQuery {
         val studentId: Int = registerStudentAccount(request)
-        return@dbQuery tokenProvider.generateToken(studentId)
+        return@dbQuery Response(
+            id = studentId,
+            token = tokenProvider.generateToken(studentId)
+        )
     }
 
     private suspend fun registerStudentAccount(request: Request): Int {
@@ -36,14 +40,12 @@ class RegisterStudent(
 
         authenticate(request.name)
 
-        if (dormitoryRoomRepository.existsById(request.room)) {
+        if (dormitoryRoomRepository.existsById(request.room).not()) {
             throw DormitoryRoomException.NotFound()
         }
 
         val studentId: Int = studentRepository.insert(Student.register(
-            name = request.name,
-            number = authenticate.number,
-            sex = authenticate.sex,
+            authenticate = authenticate,
             password = request.password,
             room = request.room
         ))
@@ -52,11 +54,18 @@ class RegisterStudent(
         return studentId
     }
 
-    @Serializable
-    data class Request(
+    class Request(
         val number: Int,
         val name: String,
-        val password: String,
-        val room: Int
+        val room: Int,
+        password: String
+    ) {
+        val password = Password(password)
+    }
+
+    @Serializable
+    data class Response(
+        val id: Int,
+        val token: TokenResult
     )
 }

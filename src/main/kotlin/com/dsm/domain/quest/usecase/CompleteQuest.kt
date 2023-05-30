@@ -7,7 +7,7 @@ import com.dsm.plugins.database.dbQuery
 
 /**
  *
- * 배달 퀘스트 완료 상태 변경을 담당하는 CompleteQuest
+ * 퀘스트 완료 처리를 담당하는 CompleteQuest
  *
  * @author Chokyunghyeon
  * @date 2023/05/16
@@ -20,12 +20,8 @@ class CompleteQuest(
         val quest: Quest = questRepository.findById(questId)
             ?: throw QuestException.NotFound()
 
-        if(quest.ownerId != studentId) {
-            throw QuestException.UnableAccept()
-        }
-
         questRepository.update(
-            quest.complete()
+            quest.complete(studentId)
         )
     }
 }
