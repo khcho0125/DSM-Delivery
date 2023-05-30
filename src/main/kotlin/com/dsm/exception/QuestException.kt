@@ -11,8 +11,8 @@ import com.dsm.persistence.entity.QuestState
  **/
 object QuestException {
 
-    class AlreadyPosted(override val message: String? = null)
-        : DomainException.Conflict(message, QuestErrorCode.ALREADY_POSTED)
+    class AlreadyPublishing(override val message: String? = null)
+        : DomainException.Conflict(message, QuestErrorCode.ALREADY_PUBLISHING)
 
     class OutOfLimitLength(override val message: String? = null)
         : DomainException.BadRequest(message, QuestErrorCode.OUT_OF_LIMIT_LENGTH)
@@ -31,8 +31,8 @@ object QuestException {
     class UnableAccept(override val message: String? = null)
         : DomainException.Conflict(message, QuestErrorCode.UNABLE_ACCEPT)
 
-    class NotTimeout(override val message: String? = null)
-        : DomainException.Conflict(message, QuestErrorCode.NOT_TIMEOUT)
+    class NotYetTimeout(override val message: String? = null)
+        : DomainException.Conflict(message, QuestErrorCode.NOT_YET_TIMEOUT)
 }
 
 enum class QuestErrorCode(
@@ -41,11 +41,11 @@ enum class QuestErrorCode(
 ) : ErrorCode {
 
     NOT_FOUND(1, "Quest Not Found"),
-    ALREADY_POSTED(2, "The other quest has been posted"),
+    ALREADY_PUBLISHING(2, "The other quest has been publishing"),
     OUT_OF_LIMIT_LENGTH(3, "The length is too much long"),
     DIFFERENT_STATE(4, "A Different Quest State"),
     UNABLE_ACCEPT(5, "Can't Accepting Quest"),
-    NOT_TIMEOUT(7, "Quest Time still left")
+    NOT_YET_TIMEOUT(7, "Quest Time still left")
 
     ;
 
