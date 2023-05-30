@@ -1,6 +1,8 @@
 package com.dsm.persistence.entity
 
-import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.ResultRow
 
 /**
@@ -10,14 +12,18 @@ import org.jetbrains.exposed.sql.ResultRow
  * @author Chokyunghyeon
  * @date 2023/05/03
  **/
-object DormitoryRoomTable : IntIdTable(name = "tbl_dormitory_room")
+object DormitoryRoomTable : IdTable<Int>(name = "tbl_dormitory_room") {
+    override val id: Column<EntityID<Int>> = integer("id").entityId()
+
+    override val primaryKey = PrimaryKey(id)
+}
 
 data class DormitoryRoom(
     val id: Int
 ) {
 
     companion object {
-        fun of(row: ResultRow) : DormitoryRoom = DormitoryRoom(
+        fun of(row: ResultRow) = DormitoryRoom(
             id = row[DormitoryRoomTable.id].value
         )
     }

@@ -2,7 +2,6 @@ package com.dsm.persistence.entity
 
 import com.dsm.exception.AuthenticateStudentException
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 
 /**
@@ -18,7 +17,7 @@ object AuthenticateStudentTable : Table("tbl_authenticate_student") {
     val sex: Column<Sex> = enumerationByName("sex", Sex.VALUE_MAX_LENGTH)
     val isUsed: Column<Boolean> = bool("is_used")
 
-    override val primaryKey: PrimaryKey = PrimaryKey(number)
+    override val primaryKey = PrimaryKey(number)
 }
 
 data class AuthenticateStudent(
@@ -28,21 +27,12 @@ data class AuthenticateStudent(
     val sex: Sex
 ) {
 
-    fun used(): AuthenticateStudent = copy(isUsed = true)
+    fun used() = copy(isUsed = true)
 
     operator fun invoke(name: String) {
         when {
             isUsed -> throw AuthenticateStudentException.AlreadyUsed()
             this.name != name -> throw AuthenticateStudentException.UnknownName()
         }
-    }
-
-    companion object {
-        fun of(row: ResultRow): AuthenticateStudent = AuthenticateStudent(
-            number = row[AuthenticateStudentTable.number],
-            name = row[AuthenticateStudentTable.name],
-            isUsed = row[AuthenticateStudentTable.isUsed],
-            sex = row[AuthenticateStudentTable.sex]
-        )
     }
 }

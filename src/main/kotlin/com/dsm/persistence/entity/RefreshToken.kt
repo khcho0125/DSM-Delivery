@@ -12,8 +12,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RefreshToken(
     val token: String,
-
     val studentId: Int,
-
     val expiredMillis: Long
 )
