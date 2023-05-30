@@ -1,8 +1,8 @@
 package com.dsm.persistence.repository
 
 import com.dsm.persistence.entity.Quest
-import com.dsm.persistence.entity.QuestOwner
 import com.dsm.persistence.entity.QuestState
+import com.dsm.persistence.entity.QuestStudent
 import java.time.LocalDateTime
 
 /**
@@ -14,17 +14,39 @@ import java.time.LocalDateTime
  **/
 interface QuestRepository {
 
-    suspend fun findById(id: Int): Quest?
-
-    suspend fun existsByOwnerId(ownerId: Int): Boolean
-
     suspend fun insert(quest: Quest): Int
-
-    suspend fun findAllByStateWithOwner(state: QuestState): List<QuestOwner>
-
-    suspend fun findAllByStateWithOwnerAfterDeadline(state: QuestState, deadline: LocalDateTime): List<QuestOwner>
 
     suspend fun update(quest: Quest): Int
 
-    suspend fun findByIdWithOwner(id: Int): QuestOwner?
+    suspend fun existsByOwnerIdAndStates(
+        ownerId: Int,
+        state: QuestState,
+        vararg states: QuestState
+    ): Boolean
+
+    suspend fun findById(id: Int): Quest?
+
+    suspend fun findByIdWithStudent(id: Int): QuestStudent?
+
+    suspend fun findAllByStateWithStudent(state: QuestState): List<QuestStudent>
+
+    suspend fun findAllByStatesAfterDeadlineWithStudent(
+        state: QuestState,
+        vararg states: QuestState,
+        deadline: LocalDateTime
+    ): List<QuestStudent>
+
+    suspend fun findAllByAcceptorIdAndStatesWithStudent(
+        acceptorId: Int,
+        state: QuestState,
+        vararg states: QuestState,
+        limit: Int
+    ): List<QuestStudent>
+
+    suspend fun findAllByOwnerIdAndStatesWithStudent(
+        ownerId: Int,
+        state: QuestState,
+        vararg states: QuestState,
+        limit: Int
+    ): List<QuestStudent>
 }
