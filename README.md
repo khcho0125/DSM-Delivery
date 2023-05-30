@@ -1,4 +1,4 @@
-#  📦 DSM-Quest Server
+#  🗡️ DSM-Quest Server
 
 * #### It's Daedeok Software Meister High School Dormitory Quest Application!
 * #### With purpose of enhancing student-to-student interaction
