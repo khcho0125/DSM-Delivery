@@ -2,7 +2,6 @@ package com.dsm.plugins.database
 
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 /**
@@ -12,9 +11,9 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
  * @author Chokyunghyeon
  * @date 2023/04/10
  **/
-suspend fun <R> dbQuery(database: Database? = null, block: suspend (Transaction) -> R) : R = newSuspendedTransaction(
+suspend fun <R> dbQuery(database: Database? = null, block: suspend () -> R) : R = newSuspendedTransaction(
     db = database,
     context = Dispatchers.IO
 ) {
-    block(this)
+    block()
 }
