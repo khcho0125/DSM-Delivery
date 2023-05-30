@@ -5,10 +5,12 @@ import com.dsm.api.StudentApi
 import com.dsm.domain.student.token.JwtGenerator
 import com.dsm.domain.student.token.TokenProvider
 import com.dsm.persistence.factory.AuthenticateStudentQueryFactory
+import com.dsm.persistence.factory.DormitoryRoomQueryFactory
 import com.dsm.persistence.factory.QuestQueryFactory
 import com.dsm.persistence.factory.RefreshTokenQueryFactory
 import com.dsm.persistence.factory.StudentQueryFactory
 import com.dsm.persistence.repository.AuthenticateStudentRepository
+import com.dsm.persistence.repository.DormitoryRoomRepository
 import com.dsm.persistence.repository.QuestRepository
 import com.dsm.persistence.repository.RefreshTokenRepository
 import com.dsm.persistence.repository.StudentRepository
@@ -37,6 +39,7 @@ fun Application.injectModule() {
         singleOf(::AuthenticateStudentQueryFactory) bind AuthenticateStudentRepository::class
         singleOf(::RefreshTokenQueryFactory) bind RefreshTokenRepository::class
         singleOf(::QuestQueryFactory) bind QuestRepository::class
+        singleOf(::DormitoryRoomQueryFactory) bind DormitoryRoomRepository::class
     }
 
     stopKoin()
