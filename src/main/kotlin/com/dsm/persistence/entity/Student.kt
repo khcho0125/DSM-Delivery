@@ -33,7 +33,7 @@ enum class Sex {
 @JvmInline
 value class Password(private val value: String) {
     init {
-        if(value.matches(ALLOWED_PATTERN)) {
+        if(value.matches(ALLOWED_PATTERN).not()) {
             throw DomainException.BadRequest("Invalid Password Configuration")
         }
     }
