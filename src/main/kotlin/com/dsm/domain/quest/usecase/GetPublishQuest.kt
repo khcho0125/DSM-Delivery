@@ -5,6 +5,7 @@ import com.dsm.persistence.entity.QuestState
 import com.dsm.persistence.entity.QuestStudent
 import com.dsm.persistence.repository.QuestRepository
 import com.dsm.plugins.database.dbQuery
+import kotlinx.serialization.Serializable
 
 /**
  *
@@ -30,6 +31,7 @@ class GetPublishQuest(
         )
     }
 
+    @Serializable
     data class Response(
         val processingQuest: List<QuestView>,
         val completedQuest: List<QuestView>
