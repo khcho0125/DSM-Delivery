@@ -60,7 +60,7 @@ class RegisterStudent(
         val room: Int,
         password: String
     ) {
-        val password = Password(password)
+        val password: Password by lazy { Password(password) }
     }
 
     @Serializable
