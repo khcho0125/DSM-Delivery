@@ -9,12 +9,11 @@ package com.dsm.exception
  **/
 object StudentException {
 
-    class NotFound(override val message: String? = null)
-        : DomainException.NotFound(message, StudentErrorCode.NOT_FOUND)
+    class NotFound(override val message: String? = null) :
+        DomainException.NotFound(message, StudentErrorCode.NOT_FOUND)
 
-    class IncorrectPassword(override val message: String? = null)
-        : DomainException.Unauthorized(message, StudentErrorCode.INCORRECT_PASSWORD)
-
+    class IncorrectPassword(override val message: String? = null) :
+        DomainException.Unauthorized(message, StudentErrorCode.INCORRECT_PASSWORD)
 }
 
 enum class StudentErrorCode(

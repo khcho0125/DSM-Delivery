@@ -62,7 +62,7 @@ fun Application.configureSecurity() {
     }
 }
 
-fun ApplicationCall.currentUserId() : Int {
+fun ApplicationCall.currentUserId(): Int {
     val principal: JWTPrincipal = principal<JWTPrincipal>()
         ?: throw DomainException.InternalServerError("JWT Principal Undefined")
 

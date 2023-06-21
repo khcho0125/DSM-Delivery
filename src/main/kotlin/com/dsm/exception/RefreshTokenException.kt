@@ -9,11 +9,11 @@ package com.dsm.exception
  **/
 object RefreshTokenException {
 
-    class NotFound(override val message: String? = null)
-        : DomainException.NotFound(message, RefreshTokenErrorCode.NOT_FOUND)
+    class NotFound(override val message: String? = null) :
+        DomainException.NotFound(message, RefreshTokenErrorCode.NOT_FOUND)
 
-    class ValidToken(override val message: String? = null)
-        : DomainException.Unauthorized(message, RefreshTokenErrorCode.VALID_TOKEN)
+    class ValidToken(override val message: String? = null) :
+        DomainException.Unauthorized(message, RefreshTokenErrorCode.VALID_TOKEN)
 }
 
 enum class RefreshTokenErrorCode(

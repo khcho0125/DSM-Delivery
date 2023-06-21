@@ -16,7 +16,7 @@ class CancelQuest(
     private val questRepository: QuestRepository
 ) {
 
-    suspend operator fun invoke(questId: Int, studentId: Int) : Unit = dbQuery {
+    suspend operator fun invoke(questId: Int, studentId: Int): Unit = dbQuery {
         val quest: Quest = questRepository.findById(questId)
             ?: throw QuestException.NotFound()
 

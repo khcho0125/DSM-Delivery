@@ -29,7 +29,7 @@ object ExposedDataBaseConnector {
 
     lateinit var master: Database
 
-    fun Events.connectExposed() : DisposableHandle = subscribe(ApplicationStarted) { application: Application ->
+    fun Events.connectExposed(): DisposableHandle = subscribe(ApplicationStarted) { application: Application ->
         runCatching {
             val config: ApplicationConfig = application.environment.config
 
@@ -46,7 +46,6 @@ object ExposedDataBaseConnector {
                     tables.run(SchemaUtils::create)
                 }
             }
-
         }.onFailure { e: Throwable ->
             e.printStackTrace()
             throw e
@@ -57,14 +56,16 @@ object ExposedDataBaseConnector {
 sealed class ExposedDataSource(
     path: String,
     config: ApplicationConfig
-) : HikariDataSource(HikariConfig().apply {
-    config.config("${Prefix.DATASOURCE}.$path").run {
-        driverClassName = property(Prefix.DRIVER).getString()
-        username = property(Prefix.USER).getString()
-        jdbcUrl = property(Prefix.URL).getString()
-        password = property(Prefix.PASSWD).getString()
+) : HikariDataSource(
+    HikariConfig().apply {
+        config.config("${Prefix.DATASOURCE}.$path").run {
+            driverClassName = property(Prefix.DRIVER).getString()
+            username = property(Prefix.USER).getString()
+            jdbcUrl = property(Prefix.URL).getString()
+            password = property(Prefix.PASSWD).getString()
+        }
     }
-}) {
+) {
 
     class Master(config: ApplicationConfig) : ExposedDataSource(MASTER, config)
 

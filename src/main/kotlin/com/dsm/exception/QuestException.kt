@@ -11,14 +11,14 @@ import com.dsm.persistence.entity.QuestState
  **/
 object QuestException {
 
-    class AlreadyPublishing(override val message: String? = null)
-        : DomainException.Conflict(message, QuestErrorCode.ALREADY_PUBLISHING)
+    class AlreadyPublishing(override val message: String? = null) :
+        DomainException.Conflict(message, QuestErrorCode.ALREADY_PUBLISHING)
 
-    class OutOfLimitLength(override val message: String? = null)
-        : DomainException.BadRequest(message, QuestErrorCode.OUT_OF_LIMIT_LENGTH)
+    class OutOfLimitLength(override val message: String? = null) :
+        DomainException.BadRequest(message, QuestErrorCode.OUT_OF_LIMIT_LENGTH)
 
-    class NotFound(override val message: String? = null)
-        : DomainException.NotFound(message, QuestErrorCode.NOT_FOUND)
+    class NotFound(override val message: String? = null) :
+        DomainException.NotFound(message, QuestErrorCode.NOT_FOUND)
 
     class DifferentState(
         override val message: String? = null
@@ -28,11 +28,11 @@ object QuestException {
         )
     }
 
-    class UnableAccept(override val message: String? = null)
-        : DomainException.Conflict(message, QuestErrorCode.UNABLE_ACCEPT)
+    class UnableAccept(override val message: String? = null) :
+        DomainException.Conflict(message, QuestErrorCode.UNABLE_ACCEPT)
 
-    class NotYetTimeout(override val message: String? = null)
-        : DomainException.Conflict(message, QuestErrorCode.NOT_YET_TIMEOUT)
+    class NotYetTimeout(override val message: String? = null) :
+        DomainException.Conflict(message, QuestErrorCode.NOT_YET_TIMEOUT)
 }
 
 enum class QuestErrorCode(
@@ -50,5 +50,4 @@ enum class QuestErrorCode(
     ;
 
     override val header: String = "QUEST"
-
 }

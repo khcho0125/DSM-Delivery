@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
  * @author Chokyunghyeon
  * @date 2023/04/10
  **/
-suspend fun <R> dbQuery(database: Database? = null, block: suspend () -> R) : R = newSuspendedTransaction(
+suspend fun <R> dbQuery(database: Database? = null, block: suspend () -> R): R = newSuspendedTransaction(
     db = database,
     context = Dispatchers.IO
 ) {

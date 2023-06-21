@@ -35,5 +35,4 @@ class RefreshTokenQueryFactory : RefreshTokenRepository {
 
     override suspend fun findByToken(token: String): RefreshToken? =
         redisCommands.get(redisKey(token)).get()?.let(jacksonObjectMapper()::readValue)
-
 }

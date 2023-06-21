@@ -13,7 +13,7 @@ interface ErrorCode {
     val sequence: Int
     val header: String
 
-    fun serial() : String = "$header-${formatCode.format(sequence)}"
+    fun serial(): String = "$header-${formatCode.format(sequence)}"
 
     companion object {
         const val formatCode: String = "%03d"

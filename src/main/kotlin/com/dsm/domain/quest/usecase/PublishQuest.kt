@@ -21,17 +21,19 @@ class PublishQuest(
     private val questRepository: QuestRepository
 ) {
 
-    suspend operator fun invoke(request: Request, studentId: Int) : Response = dbQuery {
+    suspend operator fun invoke(request: Request, studentId: Int): Response = dbQuery {
         if (questRepository.existsByOwnerIdAndStates(studentId, QuestState.PUBLISHING, QuestState.PROCESSING)) {
             throw QuestException.AlreadyPublishing()
         }
 
-        val questId: Int = questRepository.insert(Quest.publish(
-            orderId = studentId,
-            mission = request.mission,
-            publishTime = request.publishTime,
-            reward = request.reward
-        ))
+        val questId: Int = questRepository.insert(
+            Quest.publish(
+                orderId = studentId,
+                mission = request.mission,
+                publishTime = request.publishTime,
+                reward = request.reward
+            )
+        )
 
         return@dbQuery Response(questId)
     }

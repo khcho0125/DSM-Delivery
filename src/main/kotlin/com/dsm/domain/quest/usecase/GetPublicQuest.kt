@@ -22,7 +22,8 @@ class GetPublicQuest(
     suspend operator fun invoke(): Response = dbQuery {
         val questStudent: List<QuestStudent> = questRepository
             .findAllByStatesAfterDeadlineWithStudent(
-                QuestState.PUBLISHING, QuestState.PROCESSING,
+                QuestState.PUBLISHING,
+                QuestState.PROCESSING,
                 deadline = LocalDateTime.now()
             )
 

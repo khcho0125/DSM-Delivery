@@ -38,11 +38,13 @@ class JwtGenerator(
             .withExpiresAt(Date(System.currentTimeMillis() + SecurityProperties.refreshExpiredMillis))
             .sign(Algorithm.HMAC256(SecurityProperties.secret))
 
-        refreshTokenRepository.insert(RefreshToken(
-            token = token,
-            studentId = studentId,
-            expiredMillis = SecurityProperties.refreshExpiredMillis
-        ))
+        refreshTokenRepository.insert(
+            RefreshToken(
+                token = token,
+                studentId = studentId,
+                expiredMillis = SecurityProperties.refreshExpiredMillis
+            )
+        )
 
         return token
     }

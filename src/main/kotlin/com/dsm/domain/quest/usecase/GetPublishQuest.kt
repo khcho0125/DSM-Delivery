@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
  **/
 class GetPublishQuest(
     private val questRepository: QuestRepository
-){
+) {
 
     suspend operator fun invoke(studentId: Int): Response = dbQuery {
         val processingQuest: List<QuestStudent> = questRepository

@@ -44,11 +44,13 @@ class RegisterStudent(
             throw DormitoryRoomException.NotFound()
         }
 
-        val studentId: Int = studentRepository.insert(Student.register(
-            authenticate = authenticate,
-            password = request.password,
-            room = request.room
-        ))
+        val studentId: Int = studentRepository.insert(
+            Student.register(
+                authenticate = authenticate,
+                password = request.password,
+                room = request.room
+            )
+        )
         authenticateStudentRepository.update(authenticate.used())
 
         return studentId

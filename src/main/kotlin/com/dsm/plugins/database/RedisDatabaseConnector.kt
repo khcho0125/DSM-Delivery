@@ -35,7 +35,7 @@ object RedisDatabaseConnector {
 
     private val logger: Logger = LoggerFactory.getLogger(RedisDatabaseConnector::class.java)
 
-    fun Events.connectRedis() : DisposableHandle = subscribe(ApplicationStarted) {
+    fun Events.connectRedis(): DisposableHandle = subscribe(ApplicationStarted) {
         val config: ApplicationConfig = it.environment.config
 
         val redisUri: RedisURI = RedisURI.builder()
@@ -51,7 +51,7 @@ object RedisDatabaseConnector {
         logger.info(CONNECT_MESSAGE)
     }
 
-    fun Events.disconnectRedis() : DisposableHandle = subscribe(ApplicationStopped) {
+    fun Events.disconnectRedis(): DisposableHandle = subscribe(ApplicationStopped) {
         redisConnection.close()
         redisClient.shutdown()
         logger.info(CLOSE_MESSAGE)

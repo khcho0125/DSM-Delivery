@@ -20,7 +20,6 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-
 /**
  *
  * 클라이언트와 서버 간의 미디어 유형 협상을 담당하는 Negotiating
@@ -33,28 +32,32 @@ fun Application.configureNegotiating() {
         jackson {
             configure(SerializationFeature.INDENT_OUTPUT, true)
 
-            setDefaultPrettyPrinter(DefaultPrettyPrinter().apply {
-                indentArraysWith(DefaultPrettyPrinter.FixedSpaceIndenter.instance)
-                indentObjectsWith(DefaultIndenter())
-            })
+            setDefaultPrettyPrinter(
+                DefaultPrettyPrinter().apply {
+                    indentArraysWith(DefaultPrettyPrinter.FixedSpaceIndenter.instance)
+                    indentObjectsWith(DefaultIndenter())
+                }
+            )
 
-            registerModule(JavaTimeModule().apply {
-                addSerializer(LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME))
-                addDeserializer(
-                    LocalDateTime::class,
-                    LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME)
-                )
-                addSerializer(LocalDateSerializer(DateTimeFormatter.ISO_DATE))
-                addDeserializer(
-                    LocalDate::class,
-                    LocalDateDeserializer(DateTimeFormatter.ISO_DATE)
-                )
-                addSerializer(LocalTimeSerializer(DateTimeFormatter.ISO_TIME))
-                addDeserializer(
-                    LocalTime::class,
-                    LocalTimeDeserializer(DateTimeFormatter.ISO_TIME)
-                )
-            })
+            registerModule(
+                JavaTimeModule().apply {
+                    addSerializer(LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME))
+                    addDeserializer(
+                        LocalDateTime::class,
+                        LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME)
+                    )
+                    addSerializer(LocalDateSerializer(DateTimeFormatter.ISO_DATE))
+                    addDeserializer(
+                        LocalDate::class,
+                        LocalDateDeserializer(DateTimeFormatter.ISO_DATE)
+                    )
+                    addSerializer(LocalTimeSerializer(DateTimeFormatter.ISO_TIME))
+                    addDeserializer(
+                        LocalTime::class,
+                        LocalTimeDeserializer(DateTimeFormatter.ISO_TIME)
+                    )
+                }
+            )
         }
     }
 }

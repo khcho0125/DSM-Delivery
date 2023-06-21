@@ -35,7 +35,7 @@ class QuestQueryFactory : QuestRepository {
     ): Boolean = QuestTable
         .select {
             QuestTable.owner eq ownerId and
-                    (QuestTable.state inList listOf(state, *states))
+                (QuestTable.state inList listOf(state, *states))
         }
         .limit(1)
         .empty().not()
@@ -65,7 +65,7 @@ class QuestQueryFactory : QuestRepository {
         .leftJoin(QuestMapper.acceptorTable, { QuestTable.acceptor }, { QuestMapper.acceptorTable[StudentTable.id] })
         .select {
             QuestTable.deadline greater deadline and
-                    (QuestTable.state inList listOf(state, *states))
+                (QuestTable.state inList listOf(state, *states))
         }
         .map(QuestMapper::withStudent)
 
@@ -96,7 +96,7 @@ class QuestQueryFactory : QuestRepository {
         .leftJoin(QuestMapper.acceptorTable, { QuestTable.acceptor }, { QuestMapper.acceptorTable[StudentTable.id] })
         .select {
             QuestTable.acceptor eq acceptorId and
-                    (QuestTable.state inList listOf(state, *states))
+                (QuestTable.state inList listOf(state, *states))
         }
         .limit(limit)
         .map(QuestMapper::withStudent)
@@ -111,7 +111,7 @@ class QuestQueryFactory : QuestRepository {
         .leftJoin(QuestMapper.acceptorTable, { QuestTable.acceptor }, { QuestMapper.acceptorTable[StudentTable.id] })
         .select {
             QuestTable.owner eq ownerId and
-                    (QuestTable.state inList listOf(state, *states))
+                (QuestTable.state inList listOf(state, *states))
         }
         .limit(limit)
         .map(QuestMapper::withStudent)

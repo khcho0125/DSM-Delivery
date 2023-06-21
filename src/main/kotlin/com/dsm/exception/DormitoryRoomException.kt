@@ -16,12 +16,11 @@ object DormitoryRoomException {
 enum class DormitoryRoom(
     override val sequence: Int,
     override val defaultMessage: String
-): ErrorCode {
+) : ErrorCode {
 
     NOT_FOUND(1, "Dormitory Room Not Found")
 
     ;
 
     override val header: String = "ROOM"
-
 }

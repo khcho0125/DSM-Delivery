@@ -9,15 +9,14 @@ package com.dsm.exception
  **/
 object AuthenticateStudentException {
 
-    class AlreadyUsed(override val message: String? = null)
-        : DomainException.Conflict(message, AuthenticateStudentErrorCode.ALREADY_USED)
+    class AlreadyUsed(override val message: String? = null) :
+        DomainException.Conflict(message, AuthenticateStudentErrorCode.ALREADY_USED)
 
-    class UnknownName(override val message: String? = null)
-        : DomainException.Unauthorized(message, AuthenticateStudentErrorCode.UNKNOWN_NAME)
+    class UnknownName(override val message: String? = null) :
+        DomainException.Unauthorized(message, AuthenticateStudentErrorCode.UNKNOWN_NAME)
 
-    class UnknownNumber(override val message: String? = null)
-        : DomainException.Unauthorized(message, AuthenticateStudentErrorCode.UNKNOWN_NUMBER)
-
+    class UnknownNumber(override val message: String? = null) :
+        DomainException.Unauthorized(message, AuthenticateStudentErrorCode.UNKNOWN_NUMBER)
 }
 
 enum class AuthenticateStudentErrorCode(
