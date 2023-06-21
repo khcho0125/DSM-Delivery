@@ -33,7 +33,7 @@ enum class Sex {
 @JvmInline
 value class Password(private val value: String) {
     init {
-        if(value.matches(ALLOWED_PATTERN).not()) {
+        require(value.matches(ALLOWED_PATTERN)) {
             throw DomainException.BadRequest("Invalid Password Configuration")
         }
     }
@@ -42,7 +42,7 @@ value class Password(private val value: String) {
 
     companion object {
         fun verify(password: String, encodePassword: String) {
-            if (PasswordFormatter.correctPassword(password, encodePassword).not()) {
+            check(PasswordFormatter.correctPassword(password, encodePassword)) {
                 throw StudentException.IncorrectPassword()
             }
         }
@@ -50,7 +50,7 @@ value class Password(private val value: String) {
         private const val MIN_LENGTH: Int = 8
         private const val MAX_LENGTH: Int = 20
 
-        private val ALLOWED_PATTERN = Regex("""(?=.*[a-zA-Z])(?=.*\d)(?=^[\w$+-]{$MIN_LENGTH,$MAX_LENGTH}$).*""")
+        private val ALLOWED_PATTERN = Regex("""(?=.*[a-zA-Z])(?=.*\d)(?=^.{$MIN_LENGTH,$MAX_LENGTH}$).*""")
 
         internal const val HASHED_LENGTH: Int = 60
     }

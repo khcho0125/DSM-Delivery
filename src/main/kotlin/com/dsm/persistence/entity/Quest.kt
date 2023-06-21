@@ -35,12 +35,12 @@ enum class QuestState {
 @JvmInline
 value class Mission(val content: String) {
     init {
-        if (content.length > MAX_LENGTH) {
+        require(content.length <= MAX_LENGTH) {
             throw QuestException
-                .OutOfLimitLength("Too Much Long Mission (${content.length}/${MAX_LENGTH})")
+                .OutOfLimitLength("Too Much Long Mission (${content.length}/$MAX_LENGTH)")
         }
     }
-    
+
     internal companion object {
         const val MAX_LENGTH: Int = 50
     }
@@ -49,36 +49,36 @@ value class Mission(val content: String) {
 @JvmInline
 value class Reward(val value: Int) {
     init {
-        if (value < MIN_LIMIT) {
+        require(value >= MIN_LIMIT) {
             throw DomainException.BadRequest("Quest Reward Too Much Low")
         }
 
-        if (value > MAX_LIMIT) {
+        require(value <= MAX_LIMIT) {
             throw DomainException.BadRequest("Quest Reward Too Much Charge")
         }
     }
 
     private companion object {
         const val MAX_LIMIT: Int = 50_000
-        const val MIN_LIMIT: Int = 0
+        const val MIN_LIMIT: Int = 1_000
     }
 }
 
 @JvmInline
 value class PublishTime(val value: Long) {
     init {
-        if(value <= MIN_LIMIT) {
+        require(value >= MIN_LIMIT) {
             throw DomainException.BadRequest("Quest Publish Time Too Much Low")
         }
 
-        if(value > MAX_LIMIT) {
+        require(value <= MAX_LIMIT) {
             throw DomainException.BadRequest("Quest Publish Time Too Much Long")
         }
     }
 
     private companion object {
         const val MAX_LIMIT: Int = 30
-        const val MIN_LIMIT: Int = 0
+        const val MIN_LIMIT: Int = 5
     }
 }
 
@@ -93,7 +93,7 @@ data class Quest(
 ) {
 
     fun accept(studentId: Int): Quest {
-        if(state != QuestState.PUBLISHING) {
+        if (state != QuestState.PUBLISHING) {
             throw QuestException.DifferentState(QuestState.PUBLISHING)
         }
 
@@ -107,7 +107,7 @@ data class Quest(
     fun complete(studentId: Int): Quest {
         isOwnerAccept(studentId)
 
-        if(state !in arrayOf(QuestState.MISSING, QuestState.PROCESSING)) {
+        if (state !in arrayOf(QuestState.MISSING, QuestState.PROCESSING)) {
             throw QuestException.DifferentState()
         }
 
@@ -119,7 +119,7 @@ data class Quest(
     fun cancel(studentId: Int): Quest {
         isOwnerAccept(studentId)
 
-        if(state != QuestState.PUBLISHING) {
+        if (state != QuestState.PUBLISHING) {
             throw QuestException.DifferentState(QuestState.PUBLISHING)
         }
 
@@ -131,11 +131,11 @@ data class Quest(
     fun failure(studentId: Int): Quest {
         isOwnerAccept(studentId)
 
-        if(state != QuestState.PROCESSING) {
+        if (state != QuestState.PROCESSING) {
             throw QuestException.DifferentState(QuestState.PROCESSING)
         }
 
-        if(deadline.isBefore(LocalDateTime.now())) {
+        if (deadline.isBefore(LocalDateTime.now())) {
             throw QuestException.NotYetTimeout()
         }
 
