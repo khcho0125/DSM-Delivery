@@ -10,10 +10,10 @@ package com.dsm.exception
 object DormitoryRoomException {
 
     class NotFound(override val message: String? = null) :
-        DomainException.NotFound(message, DormitoryRoom.NOT_FOUND)
+        DomainException.NotFound(message, DormitoryRoomErrorCode.NOT_FOUND)
 }
 
-enum class DormitoryRoom(
+enum class DormitoryRoomErrorCode(
     override val sequence: Int,
     override val defaultMessage: String
 ) : ErrorCode {

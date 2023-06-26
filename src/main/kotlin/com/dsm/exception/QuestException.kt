@@ -45,7 +45,7 @@ enum class QuestErrorCode(
     OUT_OF_LIMIT_LENGTH(3, "The length is too much long"),
     DIFFERENT_STATE(4, "A Different Quest State"),
     UNABLE_ACCEPT(5, "Can't Accepting Quest"),
-    NOT_YET_TIMEOUT(7, "Quest Time still left")
+    NOT_YET_TIMEOUT(6, "Quest Time still left")
 
     ;
 
